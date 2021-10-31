@@ -38,7 +38,7 @@ void findFiles(const char *path)//遍歷當前資料夾
         char *command;
         strcpy( command, dest );
         system(command);
-        //sprintf("%s\n", path);
+        sprintf("wc -l %s\n", path);
     }
 }
 void RecursiveCheck(const char *path, int recursive)//遍歷子資料夾的遞迴函式
@@ -65,12 +65,12 @@ void RecursiveCheck(const char *path, int recursive)//遍歷子資料夾的遞�
             else
             {
 				//輸出檔案名
-                char *dest="wc -l ";
-                strcat(dest,temp);
-                char *command;
-                strcpy( command, dest );
-                system(command);
-                //printf("%s\n", temp);
+                // char *dest="wc -l ";
+                // strcat(dest,temp);
+                // char *command;
+                // strcpy( command, dest );
+                // system(command);
+                sprintf("wc -l %s\n", temp);
             }
         }
     }

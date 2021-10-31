@@ -5,6 +5,8 @@
 #include <sys/stat.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
+
 typedef enum { false, true }bool;
 #define MAX_PATH_LEN 500
 bool isDir(const char* path)//檢查是不是資料夾
@@ -31,7 +33,12 @@ void findFiles(const char *path)//遍歷當前資料夾
     }
     else   //輸出檔案名
     {
-        sprintf("%s\n", path);
+        char *dest="wc -l ";
+        strcat(dest,path)
+        char *command;
+        strcpy( command, dest );
+        system(command);
+        //sprintf("%s\n", path);
     }
 	return;
 }
@@ -59,7 +66,12 @@ void RecursiveCheck(const char *path, int recursive)//遍歷子資料夾的遞�
             else
             {
 				//輸出檔案名
-                printf("%s\n", temp);
+                char *dest="wc -l ";
+                strcat(dest,temp)
+                char *command;
+                strcpy( command, dest );
+                system(command);
+                //printf("%s\n", temp);
             }
         }
     }

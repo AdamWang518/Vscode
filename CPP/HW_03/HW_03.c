@@ -34,13 +34,12 @@ void findFiles(const char *path)//遍歷當前資料夾
     else   //輸出檔案名
     {
         char *dest="wc -l ";
-        strcat(dest,path)
+        strcat(dest,path);
         char *command;
         strcpy( command, dest );
         system(command);
         //sprintf("%s\n", path);
     }
-	return;
 }
 void RecursiveCheck(const char *path, int recursive)//遍歷子資料夾的遞迴函式
 {
@@ -67,7 +66,7 @@ void RecursiveCheck(const char *path, int recursive)//遍歷子資料夾的遞�
             {
 				//輸出檔案名
                 char *dest="wc -l ";
-                strcat(dest,temp)
+                strcat(dest,temp);
                 char *command;
                 strcpy( command, dest );
                 system(command);
@@ -80,7 +79,6 @@ void RecursiveCheck(const char *path, int recursive)//遍歷子資料夾的遞�
         printf("opendir error:%s\n", path);
     }
     closedir(pdir);
-	return;
 }
 int main()
 {

@@ -8,11 +8,11 @@
 #include <stdlib.h>
 int main()
 { 
-    char user[10];   
-    //printf("the user online:\n");
-    //system("who");
-    printf("請輸入你想傳送訊息的對象：\n");
+    char user[8];   
+    printf("the user online:\n");
+    system("who");
+    printf("The user you want to send message\n");
     scanf("%S", &user);
-    printf("%S\n",user);
+    
     return 0;
 }

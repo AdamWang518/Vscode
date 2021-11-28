@@ -1,5 +1,6 @@
 #include<iostream>
 #include<string>
+#include <fstream>
 #include <sys/types.h>
 #include <sys/stat.h>
 using namespace std;
@@ -8,13 +9,14 @@ class ListNode{
         string Name;
         int ID;
         int Balance;
-        ListNode *Next;
+        ListNode *Next=NULL;
     friend class LinkedList;
 };
 class LinkedList{
     private:
         ListNode *first;            // list的header，裡面不放東西，
     public:
+        void Start();
         void PrintList();      // 印出list的所有資料
         void Insert(string Name, int ID, int Balance);         // 在list新增一個node
         void Search(int ID);         //找出list中特定ID的Node
@@ -22,6 +24,10 @@ class LinkedList{
         void Clear();           //將整份list刪除(非必要)
         void Sort();             // 將整份list依照ID排好(非必要)
 };
+void LinkedList::Start(){
+    first = new ListNode();
+    first->Next = NULL;
+}
 void LinkedList::PrintList(){
     ListNode *current = first->Next; 
     if (current == NULL) {                      // 如果current指向NULL, 表示list沒有資料
@@ -40,7 +46,7 @@ void LinkedList::PrintList(){
     cout << endl;
 }
 void LinkedList::Insert(string Name, int ID, int Balance){
-    ListNode *current=first; 
+    ListNode *current=first;
     while (current->Next != NULL) {                 // Traversal
         current = current->Next;//讓current走到list的尾端
         if(current->ID==ID)
@@ -87,7 +93,9 @@ void LinkedList::Search(int ID)
 void LinkedList::Delete(int ID)
 {
     bool Flag = false;
+    ListNode *forward = first;
     ListNode *current = first->Next;
+    ListNode *backward = current->Next;
     if (current == NULL) {                      // 如果current指向NULL, 表示list沒有資料
         cout << "List is empty.\n";
         return;
@@ -95,10 +103,15 @@ void LinkedList::Delete(int ID)
     while (current != NULL) {                 // Traversal
         if(current->ID==ID)
         {
-            
+            forward->Next = backward;
+            delete current;
+            cout << "delete success" << endl;
+            Flag = true;
             return;
         } //將該node刪除並銜接前後的node
+        forward = current;
         current = current->Next;
+        backward = current->Next;
     }
     if(Flag==false)
     {
@@ -108,6 +121,7 @@ void LinkedList::Delete(int ID)
 }
 int main(){
     LinkedList list;
+    list.Start();
     int option;
     bool n = 1;
     string Name;
@@ -132,17 +146,26 @@ int main(){
                 cin >> ID;
                 cout << "Enter the balance" << endl;
                 cin >> Balance;
+                list.Insert(Name, ID, Balance);
                 break;
             case 2:
                 cout << "Enter the ID to search" << endl;
+                cin >> ID;
+                list.Search(ID);
                 break;
             case 3:
                 cout << "Enter the ID to Delete" << endl;
+                cin >> ID;
+                list.Delete(ID);
                 break;
             case 4:
+                list.PrintList();
                 break;
             case 5:
                 n = 0;
+                break;
+            default:
+                cout << "Please Enter again" << endl;
                 break;
         }
     }

@@ -48,7 +48,7 @@ void LinkedList::PrintList(){
 void LinkedList::Insert(string Name, int ID, int Balance){
     ListNode *current=first;
     while (current->Next != NULL) {                 // Traversal
-        current = current->Next;//讓current走到list的尾端
+        current = current->Next;//讓current走到list的尾端，過程中順便檢查ID是否重複
         if(current->ID==ID)
         {
             cout << "The ID already exist" << endl;

@@ -3,6 +3,8 @@
 #include <fstream>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <fcntl.h>
+#include <csignal>
 using namespace std;
 class ListNode{
     private:
@@ -21,9 +23,12 @@ class LinkedList{
         void Insert(string Name, int ID, int Balance);         // 在list新增一個node
         void Search(int ID);         //找出list中特定ID的Node
         void Delete(int ID);         // 刪除list中特定ID的Node
+        void BackUp(int signum);              //在被SIGINT時備份所有內容
+        void ReBuild();         //以備份重建List
         void Clear();           //將整份list刪除(非必要)
         void Sort();             // 將整份list依照ID排好(非必要)
 };
+
 void LinkedList::Start(){
     first = new ListNode();
     first->Next = NULL;
@@ -119,6 +124,7 @@ void LinkedList::Delete(int ID)
     }
     cout << endl;
 }
+
 int main(){
     LinkedList list;
     list.Start();
@@ -129,6 +135,7 @@ int main(){
     int Balance;
     while(n)
     {
+        
         cout << "--------Options--------" << endl;
         cout << "(1) insert data record" << endl;
         cout << "(2) Search data record" << endl;

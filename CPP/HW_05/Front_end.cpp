@@ -34,20 +34,20 @@ int main(){
         cout << "-----------------------" << endl;
         cout << "Please select an option" << endl;
         cin >> option;
-        // std::string tmp = std::to_string(option);
-        // char const *option_char = tmp.c_str();
+
         write(fd, &option, sizeof(option));
         switch(option){
             case 1:
                 cout << "Enter the name:" << endl;
                 cin >> Name;
+                //char *NameChar = Name.c_str();
                 //write(fd, &Name, sizeof(Name));
                 cout << "Enter the ID:" << endl;
                 cin >> ID;
-                //write(fd, &ID, sizeof(ID));
+                write(fd, &ID, sizeof(ID));
                 cout << "Enter the balance" << endl;
                 cin >> Balance;
-                //write(fd, &Balance, sizeof(Balance));
+                write(fd, &Balance, sizeof(Balance));
                 break;
             case 2:
                 cout << "Enter the ID to search" << endl;

@@ -150,36 +150,40 @@ int main(){
 	    }
         read(fd, &option, sizeof(option));
         cout << option << endl;
-        close(fd);
-        // switch(option){
-        //     case 1:
-        //         cout << "Enter the name:" << endl;
-        //         cin >> Name;
-        //         cout << "Enter the ID:" << endl;
-        //         cin >> ID;
-        //         cout << "Enter the balance" << endl;
-        //         cin >> Balance;
-        //         list.Insert(Name, ID, Balance);
-        //         break;
-        //     case 2:
-        //         cout << "Enter the ID to search" << endl;
-        //         cin >> ID;
-        //         list.Search(ID);
-        //         break;
-        //     case 3:
-        //         cout << "Enter the ID to Delete" << endl;
-        //         cin >> ID;
-        //         list.Delete(ID);
-        //         break;
-        //     case 4:
-        //         list.PrintList();
-        //         break;
-        //     case 5:
-        //         n = 0;
-        //         break;
-        //     default:
-        //         cout << "Please Enter again" << endl;
-        //         break;
-        // }
+        switch(option){
+            case 1:
+                cout << "Enter the name:" << endl;
+                cin >> Name;
+                cout << "Enter the ID:" << endl;
+                //cin >> ID;
+                read(fd, &ID, sizeof(ID));
+                cout << "Enter the balance" << endl;
+                //cin >> Balance;
+                read(fd, &Balance, sizeof(Balance));
+                list.Insert(Name, ID, Balance);
+                break;
+            case 2:
+                cout << "Enter the ID to search" << endl;
+                //cin >> ID;
+                read(fd, &ID, sizeof(ID));
+                list.Search(ID);
+                break;
+            case 3:
+                cout << "Enter the ID to Delete" << endl;
+                //cin >> ID;
+                read(fd, &ID, sizeof(ID));
+                list.Delete(ID);
+                break;
+            case 4:
+                list.PrintList();
+                break;
+            case 5:
+                cout << "Front end closed" << endl;
+                break;
+            default:
+                cout << "Please Enter again" << endl;
+                break;
+        }
     }
+    return 0;
 }

@@ -15,6 +15,7 @@ int main(){
     int option;
     bool n = 1;
     string Name;
+    char Namechar[50];
     int ID;
     int Balance;
     while(n)
@@ -39,9 +40,9 @@ int main(){
         switch(option){
             case 1:
                 cout << "Enter the name:" << endl;
-                cin >> Name;
+                cin >> Namechar;
                 //char *NameChar = Name.c_str();
-                //write(fd, &Name, sizeof(Name));
+                write(fd, &Namechar, sizeof(Namechar));
                 cout << "Enter the ID:" << endl;
                 cin >> ID;
                 write(fd, &ID, sizeof(ID));

@@ -132,6 +132,7 @@ int main(){
     int option;
     bool n = 1;
     string Name;
+    char NameChar[50];
     int ID;
     int Balance;
 	int ret;
@@ -153,14 +154,18 @@ int main(){
         switch(option){
             case 1:
                 cout << "Enter the name:" << endl;
-                cin >> Name;
+                //cin >> Name;
+                read(fd, &NameChar, sizeof(NameChar));
+                cout << NameChar << endl;
                 cout << "Enter the ID:" << endl;
                 //cin >> ID;
                 read(fd, &ID, sizeof(ID));
                 cout << "Enter the balance" << endl;
+                cout << ID << endl;
                 //cin >> Balance;
                 read(fd, &Balance, sizeof(Balance));
-                list.Insert(Name, ID, Balance);
+                cout << Balance << endl;
+                //list.Insert(Name, ID, Balance);
                 break;
             case 2:
                 cout << "Enter the ID to search" << endl;

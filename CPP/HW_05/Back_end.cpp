@@ -5,11 +5,13 @@
 #include <fcntl.h>
 #include<fstream>
 #include<unistd.h>
-#define FIFO_PATH "myfifo"
+#include<cstring>
+#define FIFO_PATH "fifo"
+#define MY_FIFO_PATH "myfifo"
 using namespace std;
 class ListNode{
     private:
-        string Name;
+        char Name[50];
         int ID;
         int Balance;
         ListNode *Next=NULL;
@@ -21,9 +23,9 @@ class LinkedList{
     public:
         void Start();
         void PrintList();      // 印出list的所有資料
-        void Insert(string Name, int ID, int Balance);         // 在list新增一個node
-        void Search(int ID);         //找出list中特定ID的Node
-        void Delete(int ID);         // 刪除list中特定ID的Node
+        int Insert(char Name[50], int ID, int Balance);         // 在list新增一個node
+        int Search(int ID);         //找出list中特定ID的Node
+        int Delete(int ID);         // 刪除list中特定ID的Node
         void BackUp(int signum);              //在被SIGINT時備份所有內容
         void ReBuild();         //以備份重建List
         void Clear();           //將整份list刪除(非必要)
@@ -51,32 +53,33 @@ void LinkedList::PrintList(){
     }
     cout << endl;
 }
-void LinkedList::Insert(string Name, int ID, int Balance){
+int LinkedList::Insert(char Name[50], int ID, int Balance){
     ListNode *current=first;
     while (current->Next != NULL) {                 // Traversal
         current = current->Next;//讓current走到list的尾端，過程中順便檢查ID是否重複
         if(current->ID==ID)
         {
             cout << "The ID already exist" << endl;
-            return;
+            return 0;
         }//如果已經存在則讓使用者再次輸入        
     }
     ListNode *node = new ListNode; //創造新node
-    node->Name = Name;
+    strcpy(node->Name, Name);
     node->ID = ID;
     node->Balance = Balance;
     current->Next = node; //將新的node接上去
     current = current->Next;
     current->Next = NULL;
-    return;
+    cout << "Insert Success" << endl;
+    return 1;
 }
-void LinkedList::Search(int ID)
+int LinkedList::Search(int ID)
 {
     bool Flag = false;
     ListNode *current = first->Next;
     if (current == NULL) {                      // 如果current指向NULL, 表示list沒有資料
         cout << "List is empty.\n";
-        return;
+        return 0;
     }
     while (current != NULL) {                 // Traversal
         if(current->ID==ID)
@@ -93,10 +96,14 @@ void LinkedList::Search(int ID)
     if(Flag==false)
     {
         cout << "Thist ID does Not Exist" << endl;
+        return 2;
+    }
+    else{
+        return 1;
     }
     cout << endl;
 }
-void LinkedList::Delete(int ID)
+int LinkedList::Delete(int ID)
 {
     bool Flag = false;
     ListNode *forward = first;
@@ -104,7 +111,7 @@ void LinkedList::Delete(int ID)
     ListNode *backward = current->Next;
     if (current == NULL) {                      // 如果current指向NULL, 表示list沒有資料
         cout << "List is empty.\n";
-        return;
+        return 0;
     }
     while (current != NULL) {                 // Traversal
         if(current->ID==ID)
@@ -113,7 +120,7 @@ void LinkedList::Delete(int ID)
             delete current;
             cout << "delete success" << endl;
             Flag = true;
-            return;
+            return 1;
         } //將該node刪除並銜接前後的node
         forward = current;
         current = current->Next;
@@ -122,6 +129,7 @@ void LinkedList::Delete(int ID)
     if(Flag==false)
     {
         cout << "Thist ID does Not Exist" << endl;
+        return 2;
     }
     cout << endl;
 }
@@ -131,18 +139,22 @@ int main(){
     list.Start();
     int option;
     bool n = 1;
-    string Name;
+    //string Name;
     char NameChar[50];
     int ID;
     int Balance;
 	int ret;
-	int fd;
+    int wet;
+    int fd;
+    int wfd;
+    int flag;
     /*建立FIFO*/
 	ret = mkfifo(FIFO_PATH, 0777);
+    wet = mkfifo(MY_FIFO_PATH, 0777);
 	/*打開FIFO*/
-	
 	while(1)
 	{
+        wfd = open(MY_FIFO_PATH, O_WRONLY);
         fd = open(FIFO_PATH, O_RDONLY);
 	    if(-1 == fd)
 	    {
@@ -165,19 +177,22 @@ int main(){
                 //cin >> Balance;
                 read(fd, &Balance, sizeof(Balance));
                 cout << Balance << endl;
-                //list.Insert(Name, ID, Balance);
+                flag=list.Insert(NameChar, ID, Balance);
+                write(wfd, &flag, sizeof(flag));
                 break;
             case 2:
                 cout << "Enter the ID to search" << endl;
                 //cin >> ID;
                 read(fd, &ID, sizeof(ID));
-                list.Search(ID);
+                flag=list.Search(ID);
+                write(wfd, &flag, sizeof(flag));
                 break;
             case 3:
                 cout << "Enter the ID to Delete" << endl;
                 //cin >> ID;
                 read(fd, &ID, sizeof(ID));
-                list.Delete(ID);
+                flag=list.Delete(ID);
+                write(wfd, &flag, sizeof(flag));
                 break;
             case 4:
                 list.PrintList();
@@ -189,6 +204,8 @@ int main(){
                 cout << "Please Enter again" << endl;
                 break;
         }
+        close(fd);
+        close(wfd);
     }
     return 0;
 }

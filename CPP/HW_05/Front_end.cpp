@@ -18,15 +18,17 @@ int main(){
     int flag;
     int option;
     bool n = 1;
-    //int wet = mkfifo(MY_FIFO_PATH, 0777);
+    
     int ID;
     int Balance;
+    fd = open(FIFO_PATH, O_WRONLY);//stuck here
+    rfd = open(MY_FIFO_PATH, O_RDONLY);//or here
     while(n)
     {
         char Namechar[50];
         
-        fd = open(FIFO_PATH, O_WRONLY);//stuck here
-        //rfd = open(MY_FIFO_PATH, O_RDONLY);//or here
+        
+        
         if(-1 == fd)
 	    {
 		    printf("ERROR/n");

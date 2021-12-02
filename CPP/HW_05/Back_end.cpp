@@ -6,6 +6,7 @@
 #include<fstream>
 #include<unistd.h>
 #include<cstring>
+#include <errno.h>
 #define FIFO_PATH "fifo"
 #define MY_FIFO_PATH "myfifo"
 using namespace std;
@@ -149,13 +150,18 @@ int main(){
     int wfd;
     int flag;
     /*建立FIFO*/
-	ret = mkfifo(FIFO_PATH, 0777);
-    
+     if(mkfifo(FIFO_PATH, 0777)==-1||mkfifo(MY_FIFO_PATH, 0777)==-1){
+        if(errno!=EEXIST){
+            printf("建立FIFO檔發生錯誤，程式中止。\n");
+            return 2;
+        }
+    }
+    wfd = open(MY_FIFO_PATH, O_WRONLY);
+    fd = open(FIFO_PATH, O_RDONLY);
 	/*打開FIFO*/
 	while(1)
 	{
-        //wfd = open(MY_FIFO_PATH, O_WRONLY);
-        fd = open(FIFO_PATH, O_RDONLY);
+        
 	    if(-1 == fd)
 	    {
             cout << "Error" << endl;

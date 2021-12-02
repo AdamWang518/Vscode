@@ -5,8 +5,10 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include<unistd.h>
+
 #define FIFO_PATH "fifo"
 #define MY_FIFO_PATH "myfifo"
+
 using namespace std;
 int main(){
     int fd;
@@ -16,15 +18,16 @@ int main(){
     int flag;
     int option;
     bool n = 1;
-    
+    //int wet = mkfifo(MY_FIFO_PATH, 0777);
     int ID;
     int Balance;
     while(n)
     {
         char Namechar[50];
-        fd = open(FIFO_PATH, O_WRONLY);
-        rfd = open(MY_FIFO_PATH, O_RDONLY);
-	    if(-1 == fd)
+        
+        fd = open(FIFO_PATH, O_WRONLY);//stuck here
+        //rfd = open(MY_FIFO_PATH, O_RDONLY);//or here
+        if(-1 == fd)
 	    {
 		    printf("ERROR/n");
 		    return -1;
@@ -51,58 +54,58 @@ int main(){
                 cout << "Enter the balance" << endl;
                 cin >> Balance;
                 write(fd, &Balance, sizeof(Balance));
-                read(rfd, &flag, sizeof(flag));
-                if(flag==0)
-                {
-                    cout << "ID already exist" << endl;
-                }
-                else if(flag==1)
-                {
-                    cout << "Inser scuccess" << endl;
-                }
+                // read(rfd, &flag, sizeof(flag));
+                // if(flag==0)
+                // {
+                //     cout << "ID already exist" << endl;
+                // }
+                // else if(flag==1)
+                // {
+                //     cout << "Inser scuccess" << endl;
+                // }
                 break;
             case 2:
                 cout << "Enter the ID to search" << endl;
                 cin >> ID;
                 write(fd, &ID, sizeof(ID));
-                read(rfd, &flag, sizeof(flag));
-                if(flag==0)
-                {
-                    cout << "List is empty" << endl;
-                }
-                else if(flag==1)
-                {
-                    read(rfd, &Namechar, sizeof(Namechar));
-                    read(rfd, &ID, sizeof(ID));
-                    read(rfd, &Balance, sizeof(Balance));
-                    cout << "-----------------------" << endl;
-                    cout << "Name:" << Namechar << endl;
-                    cout << "ID:" << ID << endl;
-                    cout << "Balance:" << Balance << endl;
-                    cout << "-----------------------" << endl;
-                }
-                else if(flag==2)
-                {
-                    cout << "Thist ID does Not Exist" << endl;
-                }
+                // read(rfd, &flag, sizeof(flag));
+                // if(flag==0)
+                // {
+                //     cout << "List is empty" << endl;
+                // }
+                // else if(flag==1)
+                // {
+                //     read(rfd, &Namechar, sizeof(Namechar));
+                //     read(rfd, &ID, sizeof(ID));
+                //     read(rfd, &Balance, sizeof(Balance));
+                //     cout << "-----------------------" << endl;
+                //     cout << "Name:" << Namechar << endl;
+                //     cout << "ID:" << ID << endl;
+                //     cout << "Balance:" << Balance << endl;
+                //     cout << "-----------------------" << endl;
+                // }
+                // else if(flag==2)
+                // {
+                //     cout << "Thist ID does Not Exist" << endl;
+                // }
                 break;
             case 3:
                 cout << "Enter the ID to Delete" << endl;
                 cin >> ID;
                 write(fd, &ID, sizeof(ID));
-                read(rfd, &flag, sizeof(flag));
-                if(flag==0)
-                {
-                    cout << "List is empty.\n";
-                }
-                else if(flag==1)
-                {
-                     cout << "delete success" << endl;
-                }
-                else if(flag==2)
-                {
-                    cout << "Thist ID does Not Exist" << endl;
-                }
+                // read(rfd, &flag, sizeof(flag));
+                // if(flag==0)
+                // {
+                //     cout << "List is empty.\n";
+                // }
+                // else if(flag==1)
+                // {
+                //      cout << "delete success" << endl;
+                // }
+                // else if(flag==2)
+                // {
+                //     cout << "Thist ID does Not Exist" << endl;
+                // }
                 break;
             case 4:
                 break;

@@ -150,17 +150,22 @@ int main(){
     int flag;
     /*建立FIFO*/
 	ret = mkfifo(FIFO_PATH, 0777);
-    wet = mkfifo(MY_FIFO_PATH, 0777);
+    
 	/*打開FIFO*/
 	while(1)
 	{
-        wfd = open(MY_FIFO_PATH, O_WRONLY);
+        //wfd = open(MY_FIFO_PATH, O_WRONLY);
         fd = open(FIFO_PATH, O_RDONLY);
 	    if(-1 == fd)
 	    {
             cout << "Error" << endl;
             return -1;
 	    }
+        if(-1==wfd)
+        {
+            cout << "Error" << endl;
+            return -1;
+        }
         read(fd, &option, sizeof(option));
         cout << option << endl;
         switch(option){
@@ -168,31 +173,31 @@ int main(){
                 cout << "Enter the name:" << endl;
                 //cin >> Name;
                 read(fd, &NameChar, sizeof(NameChar));
-                cout << NameChar << endl;
+                //cout << NameChar << endl;
                 cout << "Enter the ID:" << endl;
                 //cin >> ID;
                 read(fd, &ID, sizeof(ID));
                 cout << "Enter the balance" << endl;
-                cout << ID << endl;
+                //cout << ID << endl;
                 //cin >> Balance;
                 read(fd, &Balance, sizeof(Balance));
-                cout << Balance << endl;
+                //cout << Balance << endl;
                 flag=list.Insert(NameChar, ID, Balance);
-                write(wfd, &flag, sizeof(flag));
+                //write(wfd, &flag, sizeof(flag));
                 break;
             case 2:
                 cout << "Enter the ID to search" << endl;
                 //cin >> ID;
                 read(fd, &ID, sizeof(ID));
                 flag=list.Search(ID);
-                write(wfd, &flag, sizeof(flag));
+                //write(wfd, &flag, sizeof(flag));
                 break;
             case 3:
                 cout << "Enter the ID to Delete" << endl;
                 //cin >> ID;
                 read(fd, &ID, sizeof(ID));
                 flag=list.Delete(ID);
-                write(wfd, &flag, sizeof(flag));
+                //write(wfd, &flag, sizeof(flag));
                 break;
             case 4:
                 list.PrintList();

@@ -24,11 +24,11 @@ class LinkedList
 {
 private:
     ListNode *first; // list的header，裡面不放東西，
-    int number = 0;  //計有幾筆資料
+    int number;  //計有幾筆資料
 
 public:
     void Start();
-    void PrintList(int max_len);                               // 印出list的所有資料
+    void PrintList(char** data,int max_len);                               // 印出list的所有資料
     int Insert(char Name[50], int ID, int Balance); // 在list新增一個node
     int Search(int ID, char *Array,int max_len);                //找出list中特定ID的Node
     int Delete(int ID);                             // 刪除list中特定ID的Node
@@ -36,8 +36,29 @@ public:
     void ReBuild();                                 //以備份重建List
     void Clear();                                   //將整份list刪除(非必要)
     void Sort();                                    // 將整份list依照ID排好(非必要)
+    void calNumber();
     int getNumber();
+    void setNumber(int a);
 };
+void LinkedList::calNumber()
+{
+    ListNode *current = first->Next;
+    if (current == NULL)
+    { // 如果current指向NULL, 表示list沒有資料
+        number=0;
+        return;
+    }
+    while (current != NULL)
+    { // Traversal
+        number++;
+        current = current->Next;
+    }
+}
+void LinkedList::setNumber(int a)
+{
+    number = a;
+    return ;
+}
 int LinkedList::getNumber()
 {
     return number;
@@ -47,7 +68,7 @@ void LinkedList::Start()
     first = new ListNode();
     first->Next = NULL;
 }
-void LinkedList::PrintList(int max_len)
+void LinkedList::PrintList(char** data,int max_len)
 {
     ListNode *current = first->Next;
     if (current == NULL)
@@ -69,13 +90,7 @@ void LinkedList::PrintList(int max_len)
 }
 int LinkedList::Insert(char Name[50], int ID, int Balance)
 {
-    ListNode *current = first;
-    number = 0;
-    while (current->Next != NULL)
-    {                            // Traversal
-        current = current->Next; //讓current走到list的尾端
-        number++;
-    }
+    ListNode *current = first->Next;
     current = first;
     while (current->Next != NULL)
     {                            // Traversal
@@ -94,6 +109,7 @@ int LinkedList::Insert(char Name[50], int ID, int Balance)
     current = current->Next;
     current->Next = NULL;
     cout << "Insert Success" << endl;
+    number++;
     return 1;
 }
 int LinkedList::Search(int ID,char *Array,int max_len)
@@ -164,6 +180,7 @@ int main()
 {
     LinkedList list;
     list.Start();
+    list.calNumber();
     int option;
     bool n = 1;
     //string Name;
@@ -193,7 +210,6 @@ int main()
     /*打開FIFO*/
     while (1)
     {
-
         if (back == -1)
         {
             cout << "Error" << endl;
@@ -225,8 +241,8 @@ int main()
         else if(option==2)
         {
            // cout << "Enter the ID to search" << endl;
-            read(back, &ID, sizeof(ID));
             char output[100]="";
+            read(back, &ID, sizeof(ID));
             int length = list.Search(ID, output, 100);
             write(front, &length, sizeof(int));
             write(front, &output, length);
@@ -241,7 +257,9 @@ int main()
         }
         else if(option==4)
         {
-            list.PrintList(100);
+            int number = list.getNumber();
+            write(front, &number, sizeof(int));
+            //list.PrintList(100);
         }
         else if(option==5)
         {

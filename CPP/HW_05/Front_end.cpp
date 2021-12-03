@@ -67,7 +67,7 @@ int main()
             }
             else if (flag == 1)
             {
-                cout << "Inser scuccess" << endl;
+                cout << "Insert scuccess" << endl;
             }
         }
         else if(option==2)
@@ -108,7 +108,31 @@ int main()
         }
         else if(option==4)
         {
-
+            int number;
+            read(front, &number, sizeof(int));
+            char **Array;
+            Array = new char*[number];
+            for (int i = 0; i < number; i++)
+            {
+                Array[i] = new char[100];
+            }
+            if (number == 0)
+            {
+                cout << "-----------------------" << endl;
+                cout << "List is empty" << endl;
+                cout << "-----------------------" << endl;
+            }
+            for (int i = 0; i < number;i++)
+            {
+                cout << "-----------------------" << endl;
+                cout << number << endl;
+                cout << "-----------------------" << endl;
+            }
+            for (int i = 0; i < number;i++)
+            {
+                delete[] Array[i];
+            }
+            delete[] Array;
         }
         else if(option==5)
         {

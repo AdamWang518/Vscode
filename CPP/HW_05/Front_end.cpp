@@ -82,7 +82,7 @@ int main()
             // 先Read他的length
             // 再依照length去收char陣列
             read(front, &length, sizeof(int));
-            read(front, &Pack, length);
+            read(front, &Pack, sizeof(char) * length);
             cout << "-----------------------" << endl;
             cout << Pack << endl;
             cout << "-----------------------" << endl;
@@ -91,48 +91,43 @@ int main()
         {
             cout << "Enter the ID to Delete" << endl;
             cin >> ID;
-            write(back, &ID, sizeof(ID));
-            read(front, &flag, sizeof(flag));
-            if (flag == 0)
-            {
-                cout << "List is empty.\n";
-            }
-            else if (flag == 1)
-            {
-                cout << "delete success" << endl;
-            }
-            else if (flag == 2)
-            {
-                cout << "Thist ID does Not Exist" << endl;
-            }
+            write(back, &ID, sizeof(int));
+            int length;
+            char Pack[100] = "";
+            read(front, &length, sizeof(int));
+            read(front, &Pack, length);
+            cout << "-----------------------" << endl;
+            cout << Pack << endl;
+            cout << "-----------------------" << endl;
         }
         else if(option==4)
         {
             int number;
             read(front, &number, sizeof(int));
-            char **Array;
-            Array = new char*[number];
+            if(number==0)
+            {
+                number++;
+            }//由於在number==0時依舊會回傳資料為空，因此還是要宣告陣列
+            char **Pack = new char *[number];
+            int *Length = new int[number];
+            for (int i = 0; i < number;i++)
+            {
+                Pack[i] = new char[100];
+            }
+            for (int i = 0; i < number;i++)
+            {
+                read(front, &Length[i], sizeof(int));
+                read(front, Pack[i], sizeof(char) * Length[i]);
+                cout << "-----------------------" << endl;
+                cout << Pack[i] << endl;
+                cout << "-----------------------" << endl;
+            }
             for (int i = 0; i < number; i++)
             {
-                Array[i] = new char[100];
+                delete[] Pack[i];
             }
-            if (number == 0)
-            {
-                cout << "-----------------------" << endl;
-                cout << "List is empty" << endl;
-                cout << "-----------------------" << endl;
-            }
-            for (int i = 0; i < number;i++)
-            {
-                cout << "-----------------------" << endl;
-                cout << number << endl;
-                cout << "-----------------------" << endl;
-            }
-            for (int i = 0; i < number;i++)
-            {
-                delete[] Array[i];
-            }
-            delete[] Array;
+            delete[] Pack;
+            delete[] Length;
         }
         else if(option==5)
         {

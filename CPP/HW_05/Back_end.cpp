@@ -28,10 +28,10 @@ private:
 
 public:
     void Start();
-    void PrintList(char** data,int max_len);                               // 印出list的所有資料
+    void PrintList(char** data,int max_len,int *length);                               // 印出list的所有資料
     int Insert(char Name[50], int ID, int Balance); // 在list新增一個node
     int Search(int ID, char *Array,int max_len);                //找出list中特定ID的Node
-    int Delete(int ID);                             // 刪除list中特定ID的Node
+    int Delete(int ID, char *Array,int max_len);                             // 刪除list中特定ID的Node
     void BackUp(int signum);                        //在被SIGINT時備份所有內容
     void ReBuild();                                 //以備份重建List
     void Clear();                                   //將整份list刪除(非必要)
@@ -68,25 +68,23 @@ void LinkedList::Start()
     first = new ListNode();
     first->Next = NULL;
 }
-void LinkedList::PrintList(char** data,int max_len)
+void LinkedList::PrintList(char** Array,int max_len,int *length)
 {
+    bool Flag = false;
     ListNode *current = first->Next;
+    int i = 0;
     if (current == NULL)
     { // 如果current指向NULL, 表示list沒有資料
-        cout << "List is empty.\n";
+        length[0] = snprintf(Array[0], max_len, "List is empty.");
         return;
     }
-    // 用pointer *current在list中移動
-    while (current != NULL)
-    { // Traversal
-        cout << "-----------------------" << endl;
-        cout << "Name:" << current->Name << endl;
-        cout << "ID:" << current->ID << endl;
-        cout << "Balance:" << current->Balance << endl;
-        cout << "-----------------------" << endl;
+    while(current!=NULL)
+    {
+        length[i] = snprintf(Array[i], max_len, "Name:%s\nID:%d\nBalance:%d", current->Name, current->ID, current->Balance);
+        i++;
         current = current->Next;
     }
-    cout << endl;
+    return;
 }
 int LinkedList::Insert(char Name[50], int ID, int Balance)
 {
@@ -118,14 +116,14 @@ int LinkedList::Search(int ID,char *Array,int max_len)
     ListNode *current = first->Next;
     if (current == NULL)
     { // 如果current指向NULL, 表示list沒有資料
-        int length = snprintf(Array,max_len,  "List is empty.\n");
+        int length = snprintf(Array,max_len,  "List is empty.");
         return length;
     }
     while (current != NULL)
     { // Traversal
         if (current->ID == ID)
         {
-            int length = snprintf(Array,max_len, "Name:%s\nID:%d\nBalnce:%d", current->Name, current->ID, current->Balance);
+            int length = snprintf(Array,max_len, "Name:%s\nID:%d\nBalance:%d", current->Name, current->ID, current->Balance);
             // cout << "-----------------------" << endl;
             // cout << "Name:" << current->Name << endl;
             // cout << "ID:" << current->ID << endl;
@@ -137,43 +135,40 @@ int LinkedList::Search(int ID,char *Array,int max_len)
     }
     if (Flag == false)
     {
-        int length = snprintf(Array, max_len, "Thist ID does Not Exist");
+        int length = snprintf(Array, max_len, "This ID does Not Exist");
         cout << "Thist ID does Not Exist" << endl;
         return length;
     }
 }
-int LinkedList::Delete(int ID)
+int LinkedList::Delete(int ID, char *Array,int max_len)
 {
     bool Flag = false;
     ListNode *forward = first;
     ListNode *current = first->Next;
-    ListNode *backward = current->Next;
     if (current == NULL)
     { // 如果current指向NULL, 表示list沒有資料
-        cout << "List is empty.\n";
-        return 0;
+        int length = snprintf(Array, max_len, "List is empty.");
+        return length;
     }
     while (current != NULL)
     { // Traversal
         if (current->ID == ID)
         {
-            forward->Next = backward;
+            forward->Next = current->Next;
             delete current;
-            cout << "delete success" << endl;
+            int length = snprintf(Array,max_len,  "Delete success");
             number--;
             Flag = true;
-            return 1;
+            return length;
         } //將該node刪除並銜接前後的node
         forward = current;
         current = current->Next;
-        backward = current->Next;
     }
     if (Flag == false)
     {
-        cout << "Thist ID does Not Exist" << endl;
-        return 2;
+        int length = snprintf(Array,max_len,  "This ID does Not Exist");
+        return length;
     }
-    cout << endl;
 }
 
 int main()
@@ -223,43 +218,58 @@ int main()
         read(back, &option, sizeof(int));
         if(option==1)
         {
-            // cout << "Enter the name:" << endl;
-            //cin >> Name;
             read(back, &NameChar, sizeof(NameChar));
-            //cout << NameChar << endl;
-            //cout << "Enter the ID:" << endl;
-            //cin >> ID;
             read(back, &ID, sizeof(ID));
-            //cout << "Enter the balance" << endl;
-            //cout << ID << endl;
-            //cin >> Balance;
             read(back, &Balance, sizeof(Balance));
-            //cout << Balance << endl;
             flag = list.Insert(NameChar, ID, Balance);
             write(front, &flag, sizeof(flag));
         }
         else if(option==2)
         {
-           // cout << "Enter the ID to search" << endl;
             char output[100]="";
             read(back, &ID, sizeof(ID));
             int length = list.Search(ID, output, 100);
             write(front, &length, sizeof(int));
-            write(front, &output, length);
+            write(front, &output, sizeof(char) * length);
         }
         else if(option==3)
         {
-            //cout << "Enter the ID to Delete" << endl;
-            //cin >> ID;
-            read(back, &ID, sizeof(ID));
-            flag = list.Delete(ID);
-            write(front, &flag, sizeof(flag));
+            char output[100]="";
+            read(back, &ID, sizeof(int));
+            int length = list.Delete(ID, output, 100);
+            write(front, &length, sizeof(int));
+            write(front, &output, sizeof(char) * length);
         }
         else if(option==4)
         {
             int number = list.getNumber();
             write(front, &number, sizeof(int));
-            //list.PrintList(100);
+            if(number==0)
+            {
+                number++;
+            }//由於在number==0時依舊會回傳資料為空，因此還是要宣告陣列
+            char **Pack = new char *[number];
+            int *Length = new int[number];
+            for (int i = 0; i < number;i++)
+            {
+                Pack[i] = new char[100];
+            }
+            list.PrintList(Pack, 100, Length);
+            for (int i=0; i < number;i++)
+            {
+                cout << "-----------------------" << endl;
+                cout << Length[i] << endl;
+                cout << Pack[i] << endl;
+                cout << "-----------------------" << endl;
+                write(front, &Length[i], sizeof(int));
+                write(front, Pack[i], sizeof(char) * Length[i]);
+            }
+            for (int i = 0; i < number; i++)
+            {
+                delete[] Pack[i];
+            }
+            delete[] Pack;
+            delete[] Length;
         }
         else if(option==5)
         {

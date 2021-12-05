@@ -27,8 +27,7 @@ int main()
     front = open("front", O_RDONLY); //or here
     while (n)
     {
-        char Namechar[50];
-
+        char Namechar[50]="";
         if (-1 == back)
         {
             printf("ERROR/n");

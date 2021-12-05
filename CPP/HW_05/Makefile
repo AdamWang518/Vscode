@@ -3,4 +3,4 @@ Front_end:Front_end.cpp
 Back_end:Back_end.cpp
 	g++  Back_end.cpp -o Back_end
 clean:
-	rm -f  Front_end Back_end
+	rm -f  Front_end Back_end front back

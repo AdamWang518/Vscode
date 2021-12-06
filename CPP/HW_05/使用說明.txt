@@ -1,0 +1,1 @@
+請先make Front_end及make Back_end進行編譯，並分別執行，輸入ID及Balance時請注意不要輸入數字以外的東西，Name可隨意輸入

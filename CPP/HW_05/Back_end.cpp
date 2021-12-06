@@ -32,14 +32,28 @@ public:
     int Insert(char Name[50], int ID, int Balance); // 在list新增一個node
     int Search(int ID, char *Array,int max_len);                //找出list中特定ID的Node
     int Delete(int ID, char *Array,int max_len);                             // 刪除list中特定ID的Node
-    void BackUp(int signum);                        //在被SIGINT時備份所有內容
-    void ReBuild();                                 //以備份重建List
-    void Clear();                                   //將整份list刪除(非必要)
-    void Sort();                                    // 將整份list依照ID排好(非必要)
+    void BackUp();                        //備份所有內容到backupt.txt
     void calNumber();
     int getNumber();
     void setNumber(int a);
 };
+void LinkedList::BackUp()
+{
+    FILE *fp = fopen("backup.txt", "w");    //每次改動(Inser,Delete)後都重新寫入全部的資料。
+    if(fp==0){
+        cout << "無法開啟backup.txt" << endl;
+        return;
+    }
+    ListNode *current = first->Next;
+    while(current!=NULL){
+	    char buf[100];
+	    int length = snprintf(buf, 100, "Name:%s\nID:%d\nBalance:%d\n", current->Name, current->ID, current->Balance);
+	    fwrite(buf, 1, length, fp);
+	    current = current->Next;
+    }
+    // 關檔
+    fclose(fp);
+}
 void LinkedList::calNumber()
 {
     ListNode *current = first->Next;
@@ -223,6 +237,7 @@ int main()
             read(back, &Balance, sizeof(Balance));
             flag = list.Insert(NameChar, ID, Balance);
             write(front, &flag, sizeof(flag));
+            list.BackUp();//新增後備份
         }
         else if(option==2)
         {
@@ -239,6 +254,7 @@ int main()
             int length = list.Delete(ID, output, 100);
             write(front, &length, sizeof(int));
             write(front, &output, sizeof(char) * length);
+            list.BackUp();//刪除後備份
         }
         else if(option==4)
         {
@@ -257,10 +273,6 @@ int main()
             list.PrintList(Pack, 100, Length);
             for (int i=0; i < number;i++)
             {
-                cout << "-----------------------" << endl;
-                cout << Length[i] << endl;
-                cout << Pack[i] << endl;
-                cout << "-----------------------" << endl;
                 write(front, &Length[i], sizeof(int));
                 write(front, Pack[i], sizeof(char) * Length[i]);
             }

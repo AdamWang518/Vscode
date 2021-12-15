@@ -27,6 +27,27 @@ int TEST(SOCKET sConnection)
         return 0;
     }
 }
+int BADREQUEST(SOCKET sConnection)
+{
+    const char *sendbuf = "HTTP/1.0 400 BAD REQUEST\r\nContent-Type: text/html\r\n\r\n<style>body{background: #ffffff;margin: 0;}</style>400 BAD REQUEST";
+    printf("Send buf to client (0x%x) \n", &sendbuf);
+    int iResult;
+    //----------------------
+    // Send an initial buffer
+    iResult = send(sConnection,sendbuf,(int)strlen(sendbuf),0);
+    if (iResult == SOCKET_ERROR)
+    {
+        //terminate the program when send fail with error
+        printf("send have failed with error :%d \n", WSAGetLastError());
+        closesocket(sConnection);
+        WSACleanup();
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
 int NOTFOND(SOCKET sConnection)
 {
     const char *sendbuf = "HTTP/1.0 404 NOT FOUND\r\nContent-Type: text/html\r\n\r\n<style>body{background: #ffffff;margin: 0;}</style>404 NOT FOUND";
@@ -151,7 +172,7 @@ int main()
         {
             cout << "a connection was found."<<endl;
             printf("Server : got a connection from : %s\n",inet_ntoa(addr.sin_addr));
-            int result = NOTFOND(sConnection);
+            int result = TEST(sConnection);
             if(result==1)
             {
                 return 1;

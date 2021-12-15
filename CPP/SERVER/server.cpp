@@ -169,12 +169,14 @@ int main()
     while (1)
     {
         char buffer[4096]={0};
+        char checker[] = "GET ";
+        int checkint;
         cout << "Waitting for connect... "<<endl;
         if(sConnection = accept(sListen,(SOCKADDR*)&clientAddr,&addrlen))
         {
             cout << "a connection was found."<<endl;
             sRecv=recv(sConnection, buffer, sizeof(buffer), 0);
-            cout << buffer << endl;
+            //cout << buffer << endl;
             printf("Server : got a connection from : %s\n",inet_ntoa(addr.sin_addr));
             int result = GET(sConnection);
             if(result==1)

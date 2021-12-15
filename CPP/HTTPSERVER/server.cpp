@@ -3,6 +3,18 @@
 #include<iostream>
 #pragma comment (lib, "Ws2_32.lib")  //載入 ws2_32.dll
 using namespace std;
+void Find(SOCKET clntSock)
+{
+    cout << "Find" << endl;
+    char *str = "HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n<html><body><h1>example html<h1></body></html>";  
+    send(clntSock, str, (int)strlen(str)+sizeof(char), NULL);
+}
+void notFind(SOCKET clntSock)
+{
+    cout << "Not find" << endl;
+    char *str = "HTTP1.0 404 NOT FOUND\r\nContent-Type: text/html\r\n\r\n<html><body><h1>404 not found<h1></body></html>";  
+    send(clntSock, str, (int)strlen(str)+sizeof(char), NULL);
+}
 int main(){
     int port;
     cout << "set port:";
@@ -25,10 +37,8 @@ int main(){
     SOCKADDR clntAddr;  
     int nSize = sizeof(SOCKADDR);  
     SOCKET clntSock = accept(servSock, (SOCKADDR*)&clntAddr, &nSize);
-    cout << "got connection" << endl;
-    //向客戶端傳送資料
-    char *str = "HTTP/1.0 200 OK\r\nContent-Type:text/html\r\n";  
-    send(clntSock, str, strlen(str)+sizeof(char), NULL);  
+    Find(clntSock);
+    //向客戶端傳送資料    
     //關閉套接字
     closesocket(clntSock);  
     closesocket(servSock);  

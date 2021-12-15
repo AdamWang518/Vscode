@@ -6,7 +6,7 @@
 #include <fstream>
 #pragma comment(lib, "Ws2_32.lib")
 using namespace std;
-int TEST(SOCKET sConnection)
+int GET(SOCKET sConnection)
 {
     const char *sendbuf = "HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n<style>body{background: #ffffff;margin: 0;}</style>Hello, world!This is My Test Message!";
     printf("Send buf to client (0x%x) \n", &sendbuf);
@@ -172,7 +172,7 @@ int main()
         {
             cout << "a connection was found."<<endl;
             printf("Server : got a connection from : %s\n",inet_ntoa(addr.sin_addr));
-            int result = TEST(sConnection);
+            int result = GET(sConnection);
             if(result==1)
             {
                 return 1;

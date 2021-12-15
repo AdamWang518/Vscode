@@ -92,7 +92,7 @@ void handle_socket(int fd)
 
     /* 開啟檔案 */
     if((file_fd=open(&buffer[5],O_RDONLY))==-1)
-  write(fd, "Failed to open file", 19);
+    write(fd, "Failed to open file", 19);
 
     /* 傳回瀏覽器成功碼 200 和內容的格式 */
     sprintf(buffer,"HTTP/1.0 200 OK\r\nContent-Type: %s\r\n\r\n", fstr);

@@ -122,6 +122,7 @@ int main()
     // Create socket
     SOCKET sListen        ;        //listening for an incoming connection
     SOCKET sConnection    ;        //oerating if a connection was found
+    SOCKET sRecv;//deal with recv
 
     // AF_INET        :  表示建立的Socket屬於internet family
     // SOCK_STREAM    :  表示建立的socket是connection-oriented socket
@@ -167,10 +168,13 @@ int main()
     SOCKADDR_IN clientAddr;
     while (1)
     {
+        char buffer[4096]={0};
         cout << "Waitting for connect... "<<endl;
         if(sConnection = accept(sListen,(SOCKADDR*)&clientAddr,&addrlen))
         {
             cout << "a connection was found."<<endl;
+            sRecv=recv(sConnection, buffer, sizeof(buffer), 0);
+            cout << buffer << endl;
             printf("Server : got a connection from : %s\n",inet_ntoa(addr.sin_addr));
             int result = GET(sConnection);
             if(result==1)

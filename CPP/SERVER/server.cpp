@@ -1,18 +1,55 @@
-#pragma comment(lib, "Ws2_32.lib")
 #include <iostream>
 #include <stdlib.h>
 #include <stdio.h>
 #include <Windows.h>
 #include <string>
-
+#pragma comment(lib, "Ws2_32.lib")
 using namespace std;
-
-
-#define        PORT_NUM        (9527)
-
+int TEST(SOCKET sConnection)
+{
+    const char *sendbuf = "HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n<style>body{background: #ffffff;margin: 0;}</style>Hello, world!This is My Test Message!";
+    printf("Send buf to client (0x%x) \n", &sendbuf);
+    int iResult;
+    //----------------------
+    // Send an initial buffer
+    iResult = send(sConnection,sendbuf,(int)strlen(sendbuf),0);
+    if (iResult == SOCKET_ERROR)
+    {
+        //terminate the program when send fail with error
+        printf("send have failed with error :%d \n", WSAGetLastError());
+        closesocket(sConnection);
+        WSACleanup();
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
 int main()
 {
-
+    char YN;
+    int PORT_NUM = 80;
+    //set default port number=80
+    while(1)
+    {
+        cout << "Do you want to set port number?Y/N?";
+        cin >> YN;
+        if(YN=='Y')
+        {
+            cout << "Please in put port number:";
+            cin >> PORT_NUM;
+            break;
+        }
+        else if(YN=='N')
+        {
+            break;
+        }
+        else
+        {
+            continue;
+        }
+    }
     WSADATA wsaData;
     WORD    DLLVersion;
     DLLVersion = MAKEWORD(2,1);//winsocket-dll version
@@ -92,22 +129,13 @@ int main()
         {
             cout << "a connection was found."<<endl;
             printf("Server : got a connection from : %s\n",inet_ntoa(addr.sin_addr));
-
-            //Send message to client 
-            const char *sendbuf = "HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n<style>body{background: #ffffff;margin: 0;}</style>Hello, world!";
-            printf("Send buf to client (0x%x) \n", &sendbuf);
-
-            //----------------------
-            // Send an initial buffer
-            iResult = send(sConnection,sendbuf,(int)strlen(sendbuf),0);
-            if (iResult == SOCKET_ERROR)
+            int result = TEST(sConnection);
+            if(result==1)
             {
-
-                printf("send failed with error :%d \n", WSAGetLastError());
-                closesocket(sConnection);
-                WSACleanup();
                 return 1;
-            }            
+            }
+            //Send message to client 
+                        
         }
     }
  

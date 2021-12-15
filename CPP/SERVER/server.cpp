@@ -3,11 +3,33 @@
 #include <stdio.h>
 #include <Windows.h>
 #include <string>
+#include <fstream>
 #pragma comment(lib, "Ws2_32.lib")
 using namespace std;
 int TEST(SOCKET sConnection)
 {
     const char *sendbuf = "HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n<style>body{background: #ffffff;margin: 0;}</style>Hello, world!This is My Test Message!";
+    printf("Send buf to client (0x%x) \n", &sendbuf);
+    int iResult;
+    //----------------------
+    // Send an initial buffer
+    iResult = send(sConnection,sendbuf,(int)strlen(sendbuf),0);
+    if (iResult == SOCKET_ERROR)
+    {
+        //terminate the program when send fail with error
+        printf("send have failed with error :%d \n", WSAGetLastError());
+        closesocket(sConnection);
+        WSACleanup();
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+int NOTFOND(SOCKET sConnection)
+{
+    const char *sendbuf = "HTTP/1.0 404 NOT FOUND\r\nContent-Type: text/html\r\n\r\n<style>body{background: #ffffff;margin: 0;}</style>404 NOT FOUND";
     printf("Send buf to client (0x%x) \n", &sendbuf);
     int iResult;
     //----------------------
@@ -37,7 +59,7 @@ int main()
         cin >> YN;
         if(YN=='Y')
         {
-            cout << "Please in put port number:";
+            cout << "Please input port number:";
             cin >> PORT_NUM;
             break;
         }
@@ -129,7 +151,7 @@ int main()
         {
             cout << "a connection was found."<<endl;
             printf("Server : got a connection from : %s\n",inet_ntoa(addr.sin_addr));
-            int result = TEST(sConnection);
+            int result = NOTFOND(sConnection);
             if(result==1)
             {
                 return 1;

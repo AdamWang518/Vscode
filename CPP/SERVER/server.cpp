@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <Windows.h>
 #include <string>
+#include <cstdio>
 #include <fstream>
 #pragma comment(lib, "Ws2_32.lib")
 using namespace std;
@@ -26,6 +27,13 @@ int GET(SOCKET sConnection)
     {
         return 0;
     }
+}
+int EXIST(SOCKET sConnection,char *filename)
+{
+    char file[4096] = {0}; //如果有該檔案的話用來放檔案內容
+    FILE *fp;
+    fp = fopen(filename, "r");
+    return GET(sConnection);
 }
 int BADREQUEST(SOCKET sConnection)
 {
@@ -168,17 +176,31 @@ int main()
     SOCKADDR_IN clientAddr;
     while (1)
     {
+        int result;
         char buffer[4096]={0};
-        char checker[] = "GET ";
-        int checkint;
+        char filename[50] = {0};
         cout << "Waitting for connect... "<<endl;
         if(sConnection = accept(sListen,(SOCKADDR*)&clientAddr,&addrlen))
         {
             cout << "a connection was found."<<endl;
             sRecv=recv(sConnection, buffer, sizeof(buffer), 0);
-            //cout << buffer << endl;
+            cout << buffer << endl;
+            for(int i=4;i<4096;i++) {           
+                if(buffer[i] == ' ') {
+                    break;
+                }
+                filename[i - 4] = buffer[i];
+            }//分離出filename
+            cout << filename << endl;
             printf("Server : got a connection from : %s\n",inet_ntoa(addr.sin_addr));
-            int result = GET(sConnection);
+            if (strncmp(buffer,"GET ",4)&&strncmp(buffer,"get ",4))//若request不是get則回傳bad request
+            {
+                result = BADREQUEST(sConnection);
+            }
+            else
+            {
+                result = EXIST(sConnection, filename);
+            }
             if(result==1)
             {
                 return 1;

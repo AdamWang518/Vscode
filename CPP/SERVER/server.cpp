@@ -220,12 +220,8 @@ int main()
             if(result==1)
             {
                 return 1;
-            }
-            //Send message to client 
-                        
+            }       
         }
     }
- 
-    getchar();
-    getchar();
+
 }

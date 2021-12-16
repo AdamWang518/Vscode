@@ -3,14 +3,21 @@
 #include <stdio.h>
 #include <Windows.h>
 #include <string>
-#include <cstdio>
+#include<stdio.h>
 #include <fstream>
 #pragma comment(lib, "Ws2_32.lib")
 using namespace std;
-int GET(SOCKET sConnection)
+
+int GET(SOCKET sConnection,char *filename)
 {
-    const char *sendbuf = "HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n<style>body{background: #ffffff;margin: 0;}</style>Hello, world!This is My Test Message!";
-    printf("Send buf to client (0x%x) \n", &sendbuf);
+    ifstream reader;
+    char file[2048] = {0}; //用來放檔案內容
+    char sendbuf[4096] = {0};
+    reader.open(filename);
+    reader.read(file, sizeof(file));
+    reader.close();
+    snprintf(sendbuf, sizeof(sendbuf), "HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n%s", file);
+    //printf("Send buf to client (0x%x) \n", &sendbuf);
     int iResult;
     //----------------------
     // Send an initial buffer
@@ -28,17 +35,11 @@ int GET(SOCKET sConnection)
         return 0;
     }
 }
-int EXIST(SOCKET sConnection,char *filename)
-{
-    char file[4096] = {0}; //如果有該檔案的話用來放檔案內容
-    FILE *fp;
-    fp = fopen(filename, "r");
-    return GET(sConnection);
-}
+
 int BADREQUEST(SOCKET sConnection)
 {
     const char *sendbuf = "HTTP/1.0 400 BAD REQUEST\r\nContent-Type: text/html\r\n\r\n<style>body{background: #ffffff;margin: 0;}</style>400 BAD REQUEST";
-    printf("Send buf to client (0x%x) \n", &sendbuf);
+    //printf("Send buf to client (0x%x) \n", &sendbuf);
     int iResult;
     //----------------------
     // Send an initial buffer
@@ -59,7 +60,7 @@ int BADREQUEST(SOCKET sConnection)
 int NOTFOND(SOCKET sConnection)
 {
     const char *sendbuf = "HTTP/1.0 404 NOT FOUND\r\nContent-Type: text/html\r\n\r\n<style>body{background: #ffffff;margin: 0;}</style>404 NOT FOUND";
-    printf("Send buf to client (0x%x) \n", &sendbuf);
+    //printf("Send buf to client (0x%x) \n", &sendbuf);
     int iResult;
     //----------------------
     // Send an initial buffer
@@ -75,6 +76,21 @@ int NOTFOND(SOCKET sConnection)
     else
     {
         return 0;
+    }
+}
+int EXIST(SOCKET sConnection,char *filename)
+{
+    
+    ifstream fin(filename);
+    if(fin.fail ())
+    {
+        cout << "404 NOT FOUND" << endl;
+        return NOTFOND(sConnection);
+    }
+    else
+    {
+        cout << "FILE EXIST" << endl;
+        return GET(sConnection, filename);
     }
 }
 int main()
@@ -185,11 +201,11 @@ int main()
             cout << "a connection was found."<<endl;
             sRecv=recv(sConnection, buffer, sizeof(buffer), 0);
             cout << buffer << endl;
-            for(int i=4;i<4096;i++) {           
+            for(int i=5;i<4096;i++) {           
                 if(buffer[i] == ' ') {
                     break;
                 }
-                filename[i - 4] = buffer[i];
+                filename[i - 5] = buffer[i];
             }//分離出filename
             cout << filename << endl;
             printf("Server : got a connection from : %s\n",inet_ntoa(addr.sin_addr));

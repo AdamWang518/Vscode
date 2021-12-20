@@ -25,8 +25,6 @@ child_thread (void *p)
 	{
 		msgrcv (msgq_id, &Avalue, sizeof(int), 0, 0);
 		msgrcv (msgq_id, &Bvalue, sizeof(int), 0, 0);
-		printf("%d", Avalue);
-		printf("%d", Bvalue);
 		acc = acc + Avalue * Bvalue;
 		count = count + 1;
 	}

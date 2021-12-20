@@ -65,6 +65,7 @@
       "stdexcept": "cpp",
       "streambuf": "cpp",
       "typeinfo": "cpp",
-      "csignal": "cpp"
+      "csignal": "cpp",
+      "stdlib.h": "c"
     }
   }

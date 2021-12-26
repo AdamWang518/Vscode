@@ -83,6 +83,11 @@ int shell_execute(char **args)
                 exit(0);
             }
         }
+        else if(pid<0)
+        {
+            printf("fork error\n");
+            exit(1);
+        }
         wait(pid);
     }
     return 1;

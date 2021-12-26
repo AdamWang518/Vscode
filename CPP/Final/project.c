@@ -4,7 +4,7 @@
 #include <unistd.h>
 #define TOKEN_BUFSIZE 64
 #define MAX_DIR_NAME 2048
-#define LSH_TOK_DELIM " \t\r\n\a"//由於getline會留下一個換行字符，因此除將字串移除空格外也要移除換行符號
+#define TOK_WORD " \t\r\n\a"//由於getline會留下一個換行字符，因此除將字串移除空格外也要移除換行符號
 int shell_build_in_cmd(char **args){
     if(strcmp(args[0],"exit")==0)
     {
@@ -23,10 +23,10 @@ int shell_build_in_cmd(char **args){
         char buffer[MAX_DIR_NAME]={0};
         printf("%s\n", getcwd(buffer,sizeof(buffer)));
         return 1;
-    }//用getcwd來確認目前所在的檔案夾
+    }//用getcwd來確認目前所在的目錄
     else
     {
-        return 0;//非內置指令，需要Fork
+        return 0; //非以上三種內置指令，需要進行Fork才可執行
     }
 }
 char *shell_read_line()
@@ -44,7 +44,7 @@ char **shell_split_line(char *line){
         fprintf(stderr, "shell allocation error\n");//若指令為空則停止分割
         exit(EXIT_FAILURE);
     }
-    command = strtok(line, LSH_TOK_DELIM);//利用strtok分離出指令的第一個詞，如cd final中的cd
+    command = strtok(line, TOK_WORD);//利用strtok分離出指令的第一個詞，如cd final中的cd
     while (command != NULL) {
         commands[position] = command;//在commands[postion]儲存指令
         position++;
@@ -56,7 +56,7 @@ char **shell_split_line(char *line){
                 exit(EXIT_FAILURE);
             }
         }
-        command = strtok(NULL, LSH_TOK_DELIM);//繼續分割字串的剩餘部分由於getline會留下一個換行字符，因此除將字串移除空格外也要移除換行符號
+        command = strtok(NULL, TOK_WORD);//繼續分割字串的剩餘部分由於getline會留下一個換行字符，因此除將字串移除空格外也要移除換行符號
     }
     commands[position] = NULL;//最後一位設成NULL
     return commands;

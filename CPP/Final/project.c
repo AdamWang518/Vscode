@@ -44,7 +44,7 @@ char **shell_split_line(char *line){
     char *command;
     if (!commands) {
         fprintf(stderr, "shell allocation error\n");//若指令為空則停止分割
-        exit(EXIT_FAILURE);
+        exit(1);
     }
     command = strtok(line, TOK_WORD);//利用strtok分離出指令的第一個詞，如cd final中的cd
     while (command != NULL) {
@@ -55,7 +55,7 @@ char **shell_split_line(char *line){
             commands = realloc(commands, bufsize * sizeof(char*));//利用realloc在保留內容物的情況下增加記憶體空間
             if (!commands) {
                 fprintf(stderr, "shell allocation error\n");//若command分配後反而為null則終止程式
-                exit(EXIT_FAILURE);
+                exit(1);
             }
         }
         command = strtok(NULL, TOK_WORD);//繼續分割字串的剩餘部分由於getline會留下一個換行字符，因此除將字串移除空格外也要移除換行符號

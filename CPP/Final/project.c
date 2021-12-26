@@ -28,7 +28,7 @@ int shell_build_in_cmd(char **args){
     }//用getcwd來確認目前所在的目錄
     else
     {
-        return 0; //非以上三種內置指令，需要進行Fork才可執行
+        return 0; //非以上三種內置指令，需要進行Fork才可執行，因此return 0
     }
 }
 char *shell_read_line()
@@ -43,7 +43,7 @@ char **shell_split_line(char *line){
     char **commands = malloc(bufsize * sizeof(char*));//分配記憶體用以分析以空格分割的輸入，先假設有64個區段
     char *command;
     if (!commands) {
-        fprintf(stderr, "shell allocation error\n");//若指令為空則停止分割
+        fprintf(stderr, "shell allocation error\n");//若記憶體分配失敗則輸出錯誤資訊，並停止執行
         exit(1);
     }
     command = strtok(line, TOK_WORD);//利用strtok分離出指令的第一個詞，如cd final中的cd
@@ -58,7 +58,7 @@ char **shell_split_line(char *line){
                 exit(1);
             }
         }
-        command = strtok(NULL, TOK_WORD);//繼續分割字串的剩餘部分由於getline會留下一個換行字符，因此除將字串移除空格外也要移除換行符號
+        command = strtok(NULL, TOK_WORD);//繼續分割字串的剩餘部分，由於getline會留下一個換行字符，因此除將字串移除空格外也要移除換行符號
     }
     commands[position] = NULL;//最後一位設成NULL
     return commands;
@@ -73,13 +73,13 @@ int shell_execute(char **args)
     {
         return 1;
     }
-    else{       //不是內建指令，fork後再執行
+    else{       //由於外置指令需要重開進程才能執行，因此fork後再執行
         int pid=fork();
         if(pid==0)
         {
-            if(execvp(args[0],args)<0)
+            if(execvp(args[0],args)<0)//執行外置指令
             {
-                printf("%s command not found.\n", args[0]);
+                printf("%s:command not found.\n", args[0]);//指令不存在
                 exit(0);
             }
         }

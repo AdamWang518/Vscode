@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="../../css/menu.css" />
+    <title>Menu</title>
+  </head>
+  <body>
+    <script src="../../js/chinese-menu.js"></script>
+    <nav>
+      <ul class="sidebar">
+        <li>
+          <button class="sidebar" id="jixuan" onclick="getMenu('極選系列');">
+            Deluxe
+          </button>
+        </li>
+        <li>
+          <button class="sidebar" onclick="getMenu('冰咖啡系列');">
+            Ice Coffee
+          </button>
+        </li>
+        <li>
+          <button class="sidebar" onclick="getMenu('海鮮&豬系列');">
+            Seafood&Pork
+          </button>
+        </li>
+        <li>
+          <button class="sidebar" onclick="getMenu('湯品果汁&其他系列');">
+            Juice and Soup and so on
+          </button>
+        </li>
+        <li>
+          <button class="sidebar" onclick="getMenu('漢堡系列');">
+            Hamburger
+          </button>
+        </li>
+        <li>
+          <button class="sidebar" onclick="getMenu('熱咖啡系列');">
+            Hot Coffee
+          </button>
+        </li>
+        <li>
+          <button class="sidebar" onclick="getMenu('牛肉系列');">
+            Beef
+          </button>
+        </li>
+        <li>
+          <button class="sidebar" onclick="getMenu('甜品');">Sweet</button>
+        </li>
+        <li>
+          <button class="sidebar" onclick="getMenu('碳酸飲料系列');">
+            Carbonated drinks
+          </button>
+        </li>
+        <li>
+          <button class="sidebar" onclick="getMenu('茶&奶茶系列');">
+            Tea and Milk Tea
+          </button>
+        </li>
+        <li>
+          <button class="sidebar" onclick="getMenu('雞翅系列');">
+            Chicken Wings
+          </button>
+        </li>
+        <li>
+          <button class="sidebar" onclick="getMenu('雞肉系列');">
+            Chicken
+          </button>
+        </li>
+        <li>
+          <button class="sidebar" onclick="getMenu('麥克雞塊系列');">
+            McNuggets
+          </button>
+        </li>
+        <li>
+          <button class="sidebar" onclick="getMenu('麥脆雞系列');">
+            McCrispy Chicken
+          </button>
+        </li>
+        <li>
+          <button class="sidebar" onclick="getMenu('點心');">
+            Dessert
+          </button>
+        </li>
+      </ul>
+    </nav>
+    <div id="menu-container">
+      <div id="menu">
+        <div class="menu-element">
+          <button class="menu-btn">
+            <img src="../../src/comm/極選系列/BLT嫩煎雞腿堡.png" />
+          </button>
+        </div>
+        <div class="menu-element">
+          <button class="menu-btn">
+            <img src="../../src/comm/極選系列/BLT嫩煎雞腿堡.png" />
+          </button>
+        </div>
+        <div class="menu-element">
+          <button class="menu-btn">
+            <img src="../../src/comm/極選系列/BLT嫩煎雞腿堡.png" />
+          </button>
+        </div>
+        <div class="menu-element">
+          <button class="menu-btn">
+            <img src="../../src/comm/極選系列/BLT嫩煎雞腿堡.png" />
+          </button>
+        </div>
+        <div class="menu-element">
+          <button class="menu-btn">
+            <img src="../../src/comm/極選系列/BLT嫩煎雞腿堡.png" />
+          </button>
+        </div>
+        <div class="menu-element">
+          <button class="menu-btn">
+            <img src="../../src/comm/極選系列/BLT嫩煎雞腿堡.png" />
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="cart">
+      <i class="fas fa-shopping-cart"></i>
+      <button
+        class="checkcart"
+        onclick='window.open ("cart.html", "newwindow", "height=600, width=800, top=300, left=200,toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no")'
+      >
+        check the cart
+      </button>
+      <button class="check" onclick="window.location ='english-pay.html'">
+        pay
+      </button>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase-firestore.js"></script>
+    <script>
+      firebase.initializeApp({
+        projectId: "mcdownload-ec484"
+      });
+      var db = firebase.firestore();
+
+      function getMenu(collectionName) {
+        // delete old menu
+        var menu = document.getElementById("menu");
+        var container = document.getElementById("menu-container");
+        menu.remove();
+        // create new menu
+        menu = document.createElement("div");
+        menu.id = "menu";
+        // get menu
+        var ref = db.collection(collectionName);
+        ref.get().then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            var div = document.createElement("div");
+            div.className = "menu-element";
+            var btn = document.createElement("button");
+            var img = document.createElement("img");
+            img.src = doc.data()["路徑"];
+            img.width = 200;
+            img.height = 200;
+            console.log(doc.data()["路徑"]);
+            btn.append(img);
+            div.append(btn);
+            menu.append(div);
+          });
+          container.append(menu);
+        });
+      }
+
+      function changeColor(element) {
+        try {
+          var btn = document.getElementsByClassName("selected")[0];
+          btn.className = "sidebar";
+        } catch {
+          console.log("No selected button.");
+        } finally {
+          element.className = "sidebar selected";
+        }
+      }
+      function order(event) {
+        var series = event.currentTarget.getAttribute("data-series");
+        var name = event.currentTarget.getAttribute("data-name");
+        window.open(
+          "order.html",
+          "newwindow",
+          "height=600, width=800, top=300, left=200,toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no"
+        );
+        localStorage.setItem("series", series /*系列*/);
+        localStorage.setItem("name", name /*商品*/);
+    </script>
+  </body>
+</html>

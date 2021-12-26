@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <link rel="stylesheet" href="../../css/menu.css" />
-    <title>Menu</title>
+    <title>菜單</title>
   </head>
   <body>
     <script src="../../js/chinese-menu.js"></script>
@@ -89,32 +89,32 @@
     <div id="menu-container">
       <div id="menu">
         <div class="menu-element">
-          <button class="menu-btn">
+          <button class="menu-btn" onclick="order()">
             <img src="../../src/comm/極選系列/BLT嫩煎雞腿堡.png" />
           </button>
         </div>
         <div class="menu-element">
-          <button class="menu-btn">
+          <button class="menu-btn" onclick="order()">
             <img src="../../src/comm/極選系列/BLT嫩煎雞腿堡.png" />
           </button>
         </div>
         <div class="menu-element">
-          <button class="menu-btn">
+          <button class="menu-btn" onclick="order()">
             <img src="../../src/comm/極選系列/BLT嫩煎雞腿堡.png" />
           </button>
         </div>
         <div class="menu-element">
-          <button class="menu-btn">
+          <button class="menu-btn" onclick="order()">
             <img src="../../src/comm/極選系列/BLT嫩煎雞腿堡.png" />
           </button>
         </div>
         <div class="menu-element">
-          <button class="menu-btn">
+          <button class="menu-btn" onclick="order()">
             <img src="../../src/comm/極選系列/BLT嫩煎雞腿堡.png" />
           </button>
         </div>
         <div class="menu-element">
-          <button class="menu-btn">
+          <button class="menu-btn" onclick="order()">
             <img src="../../src/comm/極選系列/BLT嫩煎雞腿堡.png" />
           </button>
         </div>
@@ -122,10 +122,9 @@
     </div>
 
     <div id="cart">
-      <i class="fas fa-shopping-cart"></i>
       <button
         class="checkcart"
-        onclick='window.open ("chinese-pay.html", "newwindow", "height=600, width=800, top=300, left=200,toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no")'
+        onclick='window.open ("cart.html", "newwindow", "height=600, width=800, top=300, left=200,toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no")'
       >
         查看購物車
       </button>
@@ -133,7 +132,6 @@
         付款
       </button>
     </div>
-
     <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
     <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase-firestore.js"></script>
     <script>
@@ -141,6 +139,8 @@
         projectId: "mcdownload-ec484"
       });
       var db = firebase.firestore();
+
+      document.getElementById("jixuan").click();
 
       function getMenu(collectionName) {
         // delete old menu
@@ -161,8 +161,11 @@
             img.src = doc.data()["路徑"];
             img.width = 200;
             img.height = 200;
-            console.log(doc.data()["路徑"]);
+            //console.log(doc.data()["路徑"]);
+            btn.setAttribute("data-series", collectionName);
+            btn.setAttribute("data-name", doc.id);
             btn.append(img);
+            btn.addEventListener("click", order);
             div.append(btn);
             menu.append(div);
           });
@@ -180,8 +183,26 @@
           element.className = "sidebar selected";
         }
       }
+      var str = "test1";
+      localStorage.setItem("myName", str);
+      document.getElementById("content").textContent = localStorage.getItem(
+        "myName"
+      );
+
+      function order(event) {
+        var series = event.currentTarget.getAttribute("data-series");
+        var name = event.currentTarget.getAttribute("data-name");
+        window.open(
+          "order.html",
+          "newwindow",
+          "height=600, width=800, top=300, left=200,toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no"
+        );
+        localStorage.setItem("series", series /*系列*/);
+        localStorage.setItem("name", name /*商品*/);
+      }
     </script>
   </body>
 </html>
+
 
 

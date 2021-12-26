@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #define TOKEN_BUFSIZE 64
 #define MAX_DIR_NAME 2048
 #define TOK_WORD " \t\r\n\a"//由於getline會留下一個換行字符，因此除將字串移除空格外也要移除換行符號
@@ -63,15 +65,15 @@ char **shell_split_line(char *line){
 };
 int shell_execute(char **args)
 {
-    if(args[0]==NULL)
+    if(args[0]==NULL)//如果沒有指令則跳過這輪的執行
     {
         return 1;
     }
-    else if(shell_build_in_cmd(args))
+    else if(shell_build_in_cmd(args))//是內建指令，直接執行
     {
         return 1;
     }
-    else{
+    else{       //不是內建指令，fork後再執行
         int pid=fork();
         if(pid==0)
         {
@@ -97,7 +99,7 @@ void shell_loop()
         line = shell_read_line();//接收輸入的字串
         args = shell_split_line(line);//分割輸入的字串
         status = shell_execute(args);//執行指令
-        free(line);
+        free(line);//回收記憶體
         free(args);//回收記憶體
     }
 };

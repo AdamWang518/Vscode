@@ -14,19 +14,19 @@ int shell_build_in_cmd(char **args){
     {
         if(chdir(args[1]))
         {
-            printf("cd%s:no such directory\n", args[1]);
+            printf("cd %s:no such directory\n", args[1]);
         }
         return 1;
-    }//用來cd
+    }//用chdir來改變目錄
     else if(strcmp(args[0],"pwd")==0)
     {
         char buffer[MAX_DIR_NAME]={0};
         printf("%s\n", getcwd(buffer,sizeof(buffer)));
         return 1;
-    }//用來確認目前所在的檔案夾
+    }//用getcwd來確認目前所在的檔案夾
     else
     {
-        return 0;
+        return 0;//非內置指令，需要Fork
     }
 }
 char *shell_read_line()
@@ -48,7 +48,7 @@ char **shell_split_line(char *line){
     while (command != NULL) {
         commands[position] = command;//在commands[postion]儲存指令
         position++;
-        if (position >= bufsize) {//如果片段太長，超過BUFFSIZE就繼續分配更多記憶體給commands
+        if (position >= bufsize) {//如果片段太多，超過BUFFSIZE就繼續分配更多記憶體給commands
             bufsize += TOKEN_BUFSIZE;
             commands = realloc(commands, bufsize * sizeof(char*));//利用realloc在保留內容物的情況下增加記憶體空間
             if (!commands) {
@@ -63,23 +63,37 @@ char **shell_split_line(char *line){
 };
 int shell_execute(char **args)
 {
-    if(shell_build_in_cmd(args))
+    if(args[0]==NULL)
     {
         return 1;
     }
-    else
+    else if(shell_build_in_cmd(args))
     {
-        return 0;
+        return 1;
     }
+    else{
+        int pid=fork();
+        if(pid==0)
+        {
+            if(execvp(args[0],args)<0)
+            {
+                printf("%s command not found.\n", args[0]);
+                exit(0);
+            }
+        }
+        wait(pid);
+    }
+    return 1;
 };
 void shell_loop()
 {
     char *line;
     char **args;
     int status = 1;
+    char buffer[MAX_DIR_NAME];
     while (status)
     {
-        printf("B0829039's Shell> ");
+        printf("B0829039's Shell:%s> ", getcwd(buffer, sizeof(buffer)));
         line = shell_read_line();//接收輸入的字串
         args = shell_split_line(line);//分割輸入的字串
         status = shell_execute(args);//執行指令

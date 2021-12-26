@@ -96,14 +96,13 @@ void shell_loop()
 {
     char *line;
     char **args;
-    int status = 1;
     char buffer[MAX_DIR_NAME];
-    while (status)
+    while (1)
     {
         printf("B0829039's Shell:%s> ", getcwd(buffer, sizeof(buffer)));
         line = shell_read_line();//接收輸入的字串
         args = shell_split_line(line);//分割輸入的字串
-        status = shell_execute(args);//執行指令
+        shell_execute(args);//執行指令
         free(line);//回收記憶體
         free(args);//回收記憶體
     }

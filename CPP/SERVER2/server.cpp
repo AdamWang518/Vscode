@@ -14,7 +14,28 @@
 using namespace std;
 int BADREQUEST(int socketfd)
 {
-    const char *sendbuf = "HTTP/1.0 400 BAD REQUEST\r\nContent-Type: text/html\r\n\r\n<style>body{background: #ffffff;margin: 0;}</style>400 BAD REQUEST";
+    const char *sendbuf = "HTTP/1.0 400 BAD REQUEST\r\nContent-Type: text/html\n\n<style>body{background: #ffffff;margin: 0;}</style>400 BAD REQUEST";
+    //printf("Send buf to client (0x%x) \n", &sendbuf);
+    cout << sendbuf << endl;
+    int iResult;
+    //----------------------
+    // Send an initial buffer
+    iResult = write(socketfd,sendbuf,(int)strlen(sendbuf));
+    if (iResult<0)
+    {
+        //terminate the program when send fail with error
+        printf("send have failed with error.\n");
+        close(socketfd);
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+int NOTFOND(int socketfd)
+{
+    const char *sendbuf = "HTTP/1.0 404 NOT FOUND\r\nContent-Type: text/html\n\n<style>body{background: #ffffff;margin: 0;}</style>404 NOT FOUND";
     //printf("Send buf to client (0x%x) \n", &sendbuf);
     cout << sendbuf << endl;
     int iResult;
@@ -108,24 +129,11 @@ int main()
             cout << "Accept Fail.\n";
             exit(3);
         }
-        else
-        {
-            /*連線成功*/
-            cout << "a connection was found.\n";
-            sRecv=read(socketfd, buffer, sizeof(buffer));
-            cout << buffer << endl;
-            BADREQUEST(socketfd);
-            // /* 分出子行程處理要求 */
-            // if ((pid = fork()) < 0) {
-            //     cout << "Fork Fail.\n";
-            //     exit(3);
-            // }
-            // else
-            // {
-                
-            // }
-        }
-        
+        /*連線成功*/
+        cout << "a connection was found.\n";
+        sRecv=read(socketfd, buffer, sizeof(buffer));
+        cout << buffer << endl;
+        NOTFOND(socketfd);
     }    
     return 0;
 }

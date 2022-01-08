@@ -36,7 +36,7 @@ int GET(SOCKET sConnection,char *filename)
 
 int BADREQUEST(SOCKET sConnection)
 {
-    const char *sendbuf = "HTTP/1.0 400 BAD REQUEST\r\nContent-Type: text/html\r\n\r\n<style>body{background: #ffffff;margin: 0;}</style>400 BAD REQUEST";
+    const char *sendbuf = "HTTP/1.0 400 BAD REQUEST\r\nContent-Type: text/html\r\n<style>body{background: #ffffff;margin: 0;}</style>400 BAD REQUEST";
     //printf("Send buf to client (0x%x) \n", &sendbuf);
     int iResult;
     //----------------------

@@ -28,6 +28,7 @@ int BADREQUEST(int socketfd)
 {
     const char *sendbuf = "HTTP/1.0 400 BAD REQUEST\nContent-Type: text/html\n\n<!DOCTYPE html><html><head><title>400 BAD REQUEST</title></head><body><h1>400 BAD REQUEST</h1></body></html>";;
     //printf("Send buf to client (0x%x) \n", &sendbuf);
+    cout << "400 BAD REQUEST" << endl;
     int iResult;
     //----------------------
     // Send an initial buffer
@@ -49,6 +50,7 @@ int NOTFOND(int socketfd)
 {
     const char *sendbuf = "HTTP/1.0 404 NOT FOUND\nContent-Type: text/html\n\n<!DOCTYPE html><html><head><title>404 NOT FOUND</title></head><body><h1>404 NOT FOUND</h1></body></html>";;
     //printf("Send buf to client (0x%x) \n", &sendbuf);
+    cout << "404 NOT FOUND" << endl;
     int iResult;
     //----------------------
     // Send an initial buffer
@@ -107,6 +109,9 @@ void handle__request(int fd)
         break;
     }
     parse_request(fd, buffer, obj);
+    if(obj.method != "GET" || obj.version != "HTTP/1.1"){
+        BADREQUEST(fd);
+    }
     NOTFOND(fd);
 }
 int main()

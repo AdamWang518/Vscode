@@ -1,43 +1,54 @@
 #include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
+#include <stdlib.h>  
+#include <limits.h>
+#include <cstring>
+#include <sstream>
 #include <unistd.h>
-#include <errno.h>
-#include <string.h>
+#include <regex>
+#include <sys/stat.h>
 #include <fcntl.h>
-#include <signal.h>
-#include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/wait.h>
+#include <sys/types.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #define BUFSIZE 8096
 using namespace std;
+class Objective{
+public:
+    Objective(){};
+    char  method[512];
+    char  filename[512];
+    char  version[512];
+    bool  hasRange;
+    int   size;
+    int   start;
+};
 int BADREQUEST(int socketfd)
 {
-    const char *sendbuf = "HTTP/1.0 400 BAD REQUEST\r\nContent-Type: text/html\n\n<style>body{background: #ffffff;margin: 0;}</style>400 BAD REQUEST";
+    const char *sendbuf = "HTTP/1.0 400 BAD REQUEST\nContent-Type: text/html\n\n<!DOCTYPE html><html><head><title>400 BAD REQUEST</title></head><body><h1>400 BAD REQUEST</h1></body></html>";;
     //printf("Send buf to client (0x%x) \n", &sendbuf);
-    cout << sendbuf << endl;
     int iResult;
     //----------------------
     // Send an initial buffer
-    iResult = write(socketfd,sendbuf,(int)strlen(sendbuf));
+    iResult = send(socketfd,sendbuf,(int)strlen(sendbuf),0);
     if (iResult<0)
     {
         //terminate the program when send fail with error
         printf("send have failed with error.\n");
         close(socketfd);
-        return 1;
+        exit(1);
     }
     else
     {
-        return 0;
+        close(socketfd);
+        exit(0);
     }
 }
 int NOTFOND(int socketfd)
 {
-    const char *sendbuf = "HTTP/1.0 404 NOT FOUND\r\nContent-Type: text/html\n\n<style>body{background: #ffffff;margin: 0;}</style>404 NOT FOUND";
+    const char *sendbuf = "HTTP/1.0 404 NOT FOUND\nContent-Type: text/html\n\n<!DOCTYPE html><html><head><title>404 NOT FOUND</title></head><body><h1>404 NOT FOUND</h1></body></html>";;
     //printf("Send buf to client (0x%x) \n", &sendbuf);
-    cout << sendbuf << endl;
     int iResult;
     //----------------------
     // Send an initial buffer
@@ -47,17 +58,56 @@ int NOTFOND(int socketfd)
         //terminate the program when send fail with error
         printf("send have failed with error.\n");
         close(socketfd);
-        return 1;
+        exit(1);
     }
     else
     {
-        return 0;
+        close(socketfd);
+        exit(0);
     }
 }
-void handle_socket(int fd)
+void parse_request(int fd,char *sizeRequest,Objective& Obj)
 {
-    
-
+    string reqMethod = "", target = "",version = "";
+    char sizeResource[4096];
+    char *request;
+    request = strtok(sizeRequest, " ");//擷取使用的method
+    reqMethod += request;
+    cout << reqMethod << endl;
+    request = strtok(NULL, " ");    //擷取檔名
+    if(request == NULL){    //沒有要求，格式錯誤
+        cout << "400 BAD REQUEST" << endl;
+        BADREQUEST(fd);
+    }
+    request = request + 1; // 跳過第一個斜槓，取得路徑與檔名
+    target += request;
+    cout << target << endl;
+    request = strtok(NULL, " \r\n");
+    if(request == NULL){//沒有版本，格式錯誤
+        cout << "400 BAD REQUEST." << endl;
+        BADREQUEST(fd);
+    }
+    version += request;
+    cout << version << endl;
+    strncpy(Obj.method, reqMethod.c_str(), 20);
+    strncpy(Obj.filename, target.c_str(), 200);
+    strncpy(Obj.version, version.c_str(), 20);
+}
+void handle__request(int fd)
+{
+    Objective obj;
+    int sRecv;
+    char buffer[4096]={0};
+    char filename[50]={0};
+    while(1)
+    {
+        cout << "a connection was found.\n";
+        sRecv=read(fd, buffer, sizeof(buffer));
+        cout << buffer << endl;
+        break;
+    }
+    parse_request(fd, buffer, obj);
+    NOTFOND(fd);
 }
 int main()
 {
@@ -66,6 +116,7 @@ int main()
     //set default port number=80
     while(1)
     {
+        
         cout << "Do you want to set port number?Y/N?";
         cin >> YN;
         if(YN=='Y')
@@ -120,20 +171,26 @@ int main()
     }
     while(1) {
         cout << "Waiting for connection... "<<endl;
-        char buffer[4096]={0};
-        char filename[50] = {0};
         length = sizeof(cli_addr);
         /* 等待客戶端連線 */
         if ((socketfd = accept(listenfd, (struct sockaddr *)&cli_addr, &length))<0)
         {
             cout << "Accept Fail.\n";
-            exit(3);
+            exit(1);
         }
         /*連線成功*/
-        cout << "a connection was found.\n";
-        sRecv=read(socketfd, buffer, sizeof(buffer));
-        cout << buffer << endl;
-        NOTFOND(socketfd);
+        int id = fork();
+        if(id == -1){
+            cout << "fork error.\n";//fork失敗
+            return -1;
+        }
+        if(id == 0){   // 子程序
+            handle__request(socketfd);
+            exit(0);
+        }
+        else if(id > 0){
+            close(socketfd);
+        }
     }    
     return 0;
 }

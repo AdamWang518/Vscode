@@ -16,10 +16,11 @@ int BADREQUEST(int socketfd)
 {
     const char *sendbuf = "HTTP/1.0 400 BAD REQUEST\r\nContent-Type: text/html\r\n\r\n<style>body{background: #ffffff;margin: 0;}</style>400 BAD REQUEST";
     //printf("Send buf to client (0x%x) \n", &sendbuf);
+    cout << sendbuf << endl;
     int iResult;
     //----------------------
     // Send an initial buffer
-    iResult = send(socketfd,sendbuf,(int)strlen(sendbuf),0);
+    iResult = write(socketfd,sendbuf,(int)strlen(sendbuf));
     if (iResult<0)
     {
         //terminate the program when send fail with error
@@ -111,17 +112,18 @@ int main()
         {
             /*連線成功*/
             cout << "a connection was found.\n";
-            sRecv=recv(socketfd, buffer, sizeof(buffer), 0);
+            sRecv=read(socketfd, buffer, sizeof(buffer));
             cout << buffer << endl;
-            /* 分出子行程處理要求 */
-            if ((pid = fork()) < 0) {
-                cout << "Fork Fail.\n";
-                exit(3);
-            }
-            else
-            {
+            BADREQUEST(socketfd);
+            // /* 分出子行程處理要求 */
+            // if ((pid = fork()) < 0) {
+            //     cout << "Fork Fail.\n";
+            //     exit(3);
+            // }
+            // else
+            // {
                 
-            }
+            // }
         }
         
     }    

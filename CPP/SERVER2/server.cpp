@@ -157,6 +157,7 @@ void handle__request(int fd)
                     snprintf(Resource, 4096, "HTTP/1.1 200 OK\nContent-Type: %s\nContent-Length: %d\nAccept-Ranges: bytes\n\n", contentType, fileLength);
                     cout << Resource << endl;
                     send(fd, Resource, strlen(Resource), MSG_NOSIGNAL);
+                    cout << "send header success" << endl;
                 }
                 else//以片段傳送後續影片
                 {
@@ -220,8 +221,6 @@ void handle__request(int fd)
             }
         }
     }
-    
-    BADREQUEST(fd);
 }
 int main()
 {
@@ -283,6 +282,7 @@ int main()
     {
         cout << "Listen Success.\n";
     }
+    
     while(1) {
         cout << "Waiting for connection... "<<endl;
         length = sizeof(cli_addr);
@@ -293,12 +293,13 @@ int main()
             exit(1);
         }
         /*連線成功*/
-        int id = fork();
+        pid_t id = fork();
         if(id == -1){
             cout << "fork error.\n";//fork失敗
             return -1;
         }
         if(id == 0){   // 子程序
+            close(listenfd);
             handle__request(socketfd);
             exit(0);
         }

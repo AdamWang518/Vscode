@@ -67,6 +67,18 @@
       "typeinfo": "cpp",
       "csignal": "cpp",
       "stdlib.h": "c",
-      "cstring": "cpp"
+      "cstring": "cpp",
+      "regex": "cpp",
+      "bitset": "cpp",
+      "cerrno": "cpp",
+      "climits": "cpp",
+      "ctime": "cpp",
+      "map": "cpp",
+      "iterator": "cpp",
+      "ios": "cpp",
+      "locale": "cpp",
+      "queue": "cpp",
+      "stack": "cpp",
+      "random": "cpp"
     }
   }

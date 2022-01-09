@@ -1,28 +1,22 @@
 #include <iostream>
 #include <stdlib.h>  
-#include <limits.h>
 #include <cstring>
-#include <sstream>
 #include <unistd.h>
-#include <regex>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <sys/socket.h>
-#include <sys/wait.h>
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#define BUFSIZE 8096
+
 using namespace std;
 class Objective{
 public:
-    Objective(){};
-    char  method[512];
-    char  filename[512];
-    char  version[512];
-    bool  hasRange;
-    int   size;
-    int   start;
+    bool  Range;//儲存是否為range request
+    int   startPoint;//檔案讀取的開始點
+    char  requestMethod[32];//儲存該request的method
+    char  requestFilename[1024];//儲存該request要求的filename
+    char  requestVersion[32];//儲存該request的version
 };
 int BADREQUEST(int socketfd)
 {
@@ -52,37 +46,37 @@ void request_parser(int fd,char *sizeRequest,Objective& Obj)
     char *request;
     if((range = strstr(sizeRequest, "Range: bytes=")) == NULL){
         cout << "no range in this request." << endl;//儲存該request沒有range的事實
-        Obj.hasRange = false;
-        Obj.start = 0;
+        Obj.Range = false;
+        Obj.startPoint = 0;
     }
     else{
         cout << "find out range in this request." << endl;
-        range = range + 13;//將range指向第一個數字
+        range += 13; //將range指向第一個數字
         range = strtok(range, "-");
-        Obj.hasRange = true;
+        Obj.Range = true;
         string start = range;//儲存該request有range的事實
-        Obj.start = stoi(range);
-        cout << "start at: " << Obj.start << endl;
+        Obj.startPoint = stoi(range);
+        cout << "start at: " << Obj.startPoint << endl;
     }
     request = strtok(sizeRequest, " ");//擷取使用的method
     reqMethod += request;
-    cout << reqMethod << endl;
+    //cout << reqMethod << endl;
     request = strtok(NULL, " ");    //擷取檔名
     if(request == NULL){    //沒有要求，格式錯誤
         BADREQUEST(fd);
     }
     request = request + 1; // 跳過第一個斜槓，取得路徑與檔名
     target += request;
-    cout << target << endl;
+    //cout << target << endl;
     request = strtok(NULL, " \r\n");
     if(request == NULL){//沒有版本，格式錯誤
         BADREQUEST(fd);
     }
     version += request;
-    cout << version << endl;
-    strncpy(Obj.method, reqMethod.c_str(), 20);
-    strncpy(Obj.filename, target.c_str(), 200);
-    strncpy(Obj.version, version.c_str(), 20);
+    //cout << version << endl;
+    strcpy(Obj.requestMethod, reqMethod.c_str());
+    strcpy(Obj.requestFilename, target.c_str());
+    strcpy(Obj.requestVersion, version.c_str());
 }
 void request_handler(int fd)
 {
@@ -96,42 +90,42 @@ void request_handler(int fd)
         sRecv=read(fd, buffer, sizeof(buffer));//將request儲存於buffer
         cout << buffer << endl;
         request_parser(fd, buffer, obj);
-        if(strcmp(obj.method, "GET")){//非GET，格式錯誤，回傳400
+        if(strcmp(obj.requestMethod, "GET")){//非GET，格式錯誤，回傳400
             cout << "wrong method" << endl;
             BADREQUEST(fd);
         }
-        if(strcmp(obj.version,"HTTP/1.1"))//版本錯誤，回傳400
+        if(strcmp(obj.requestVersion,"HTTP/1.1"))//版本錯誤，回傳400
         {
             cout << "wrong version" << endl;
             BADREQUEST(fd);
         }
         char contentType[30];
-        if(strstr(obj.filename, ".mp4") != NULL){//要求檔案類型為mp4，設定content type為video/mp4
+        if(strstr(obj.requestFilename, ".mp4") != NULL){//要求檔案類型為mp4，設定content type為video/mp4
             cout << "A Video request" << endl;
             strcpy(contentType, "video/mp4");
         }
-        else if(strstr(obj.filename, ".html") != NULL){//要求檔案類型為html，設定content type為text/html
+        else if(strstr(obj.requestFilename, ".html") != NULL){//要求檔案類型為html，設定content type為text/html
             cout << "A Text request" << endl;
             strcpy(contentType, "text/html");
         }
         char Resource[4096]={0};
         if(strcmp(contentType, "video/mp4") == 0)//以是否為影片進行不同的處理
         {
-            FILE *reader = fopen(obj.filename, "rb+");//讀取影片檔案
+            FILE *reader = fopen(obj.requestFilename, "rb+");//讀取影片檔案
             if(reader == NULL){
-                cout << obj.filename << ":does not exist" << endl;
+                cout << obj.requestFilename << ":does not exist" << endl;
                 NOTFOND(fd);//檔案不存在，回傳404
                 exit(1);     
             }
             else
             {
                 //檔案存在，回傳200
-                cout << obj.filename << ":does  exist" << endl;
+                cout << obj.requestFilename << ":does  exist" << endl;
                 // 以fseek獲取文件大小好方便回傳Content Length
                 fseek(reader, 0L, SEEK_END);
                 int fileLength = ftell(reader);
                 fseek(reader, 0, SEEK_SET); //將讀寫位置設為檔案的開頭
-                if(!obj.hasRange){  // 第一次先送header跟range
+                if(!obj.Range){  // 第一次先送header跟range
                     cout << "200 OK" << endl;
                     snprintf(Resource, 4096, "HTTP/1.1 200 OK\nContent-Type: %s\nContent-Length: %d\nAccept-Ranges: bytes\n\n", contentType, fileLength);
                     cout << Resource << endl;
@@ -140,7 +134,7 @@ void request_handler(int fd)
                 }
                 else//以斷點續傳方式傳送後續影片，每次傳送部分片段
                 {
-                    long contentLeft = fileLength - obj.start;//檔案剩餘大小
+                    long contentLeft = fileLength - obj.startPoint;//檔案剩餘大小
                     int fragSize = 65536;//response的檔案大小(64KB)，64*1024=65536
                     int fragNum = contentLeft / fragSize;//需要傳送的Response次數
                     if(contentLeft % fragSize != 0)
@@ -151,12 +145,12 @@ void request_handler(int fd)
                     {
                         if(i+1 == fragNum)
                         {
-                            fragSize = fileLength - obj.start; //將response大小重設以處理無法整除的剩餘部分
+                            fragSize = fileLength - obj.startPoint; //將response大小重設以處理無法整除的剩餘部分
                         }
-                        snprintf(Resource, 4096, "HTTP/1.1 206 Partial Content\nContent-Type: %s\nContent-Length: %d\nContent-Range: bytes %d-%d/%d\nAccept-Ranges: bytes\n\n",contentType, fragSize, obj.start, obj.start+fragSize-1, fileLength);
+                        snprintf(Resource, 4096, "HTTP/1.1 206 Partial Content\nContent-Type: %s\nContent-Length: %d\nContent-Range: bytes %d-%d/%d\nAccept-Ranges: bytes\n\n",contentType, fragSize, obj.startPoint, obj.startPoint+fragSize-1, fileLength);
                         send(fd, Resource, strlen(Resource), MSG_NOSIGNAL);
                         char sizeBuffer[fragSize]={0};
-                        fseek(reader, obj.start, SEEK_SET);//將讀寫位置設為瀏覽器要求的位置
+                        fseek(reader, obj.startPoint, SEEK_SET);//將讀寫位置設為瀏覽器要求的位置
                         if(fread(sizeBuffer, 1, fragSize, reader) == 0){
                             cout << "read video file error." << endl;
                             exit(1);
@@ -164,7 +158,7 @@ void request_handler(int fd)
                         else
                         {
                             send(fd, sizeBuffer, fragSize, MSG_NOSIGNAL);
-                            obj.start += fragSize;//在response後移動下次要傳送的讀寫位置
+                            obj.startPoint += fragSize;//在response後移動下次要傳送的讀寫位置
                             memset(sizeBuffer, 0, fragSize);//在每次寫入後清空buffer
                         }
                     }
@@ -174,15 +168,15 @@ void request_handler(int fd)
         }
         else
         {
-            FILE *reader = fopen(obj.filename, "r");
+            FILE *reader = fopen(obj.requestFilename, "r");
             if(reader == NULL){
-                cout << obj.filename << ":does not exist" << endl;
+                cout << obj.requestFilename << ":does not exist" << endl;
                 NOTFOND(fd);//檔案不存在，回傳404
                 exit(1);     
             }
             else
             {
-                cout << obj.filename << ":does  exist" << endl;
+                cout << obj.requestFilename << ":does  exist" << endl;
                 fseek(reader, 0L, SEEK_END);
                 int fileLength = ftell(reader);//利用fseek取得檔案長度
                 fseek(reader, 0, SEEK_SET);    //將讀寫位置設為檔案的開頭

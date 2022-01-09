@@ -155,6 +155,7 @@ void handle__request(int fd)
                 if(!obj.hasRange){  // 第一次先送header跟range
                     cout << "200 OK" << endl;
                     snprintf(Resource, 4096, "HTTP/1.1 200 OK\nContent-Type: %s\nContent-Length: %d\nAccept-Ranges: bytes\n\n", contentType, fileLength);
+                    cout << Resource << endl;
                     send(fd, Resource, strlen(Resource), MSG_NOSIGNAL);
                 }
                 else//以片段傳送後續影片

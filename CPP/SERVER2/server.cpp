@@ -26,49 +26,26 @@ public:
 };
 int BADREQUEST(int socketfd)
 {
-    const char *sendbuf = "HTTP/1.0 400 BAD REQUEST\nContent-Type: text/html\n\n<!DOCTYPE html><html><head><title>400 BAD REQUEST</title></head><body><h1>400 BAD REQUEST</h1></body></html>";;
-    //printf("Send buf to client (0x%x) \n", &sendbuf);
-    cout << "400 BAD REQUEST" << endl;
-    int iResult;
+    const char *sendbuf = "HTTP/1.0 400 BAD REQUEST\nContent-Type: text/html\n\n<!DOCTYPE html><html><head><title>400 BAD REQUEST</title></head><body><h1>400 BAD REQUEST</h1></body></html>";
+    //cout << "400 BAD REQUEST" << endl;
     //----------------------
     // Send an initial buffer
-    iResult = send(socketfd,sendbuf,(int)strlen(sendbuf),0);
-    if (iResult<0)
-    {
-        //terminate the program when send fail with error
-        printf("send have failed with error.\n");
-        close(socketfd);
-        exit(1);
-    }
-    else
-    {
-        close(socketfd);
-        exit(0);
-    }
+    send(socketfd,sendbuf,(int)strlen(sendbuf),0);
+    close(socketfd);
+    exit(0);
+
 }
 int NOTFOND(int socketfd)
 {
-    const char *sendbuf = "HTTP/1.0 404 NOT FOUND\nContent-Type: text/html\n\n<!DOCTYPE html><html><head><title>404 NOT FOUND</title></head><body><h1>404 NOT FOUND</h1></body></html>";;
-    //printf("Send buf to client (0x%x) \n", &sendbuf);
-    cout << "404 NOT FOUND" << endl;
-    int iResult;
+    const char *sendbuf = "HTTP/1.0 404 NOT FOUND\nContent-Type: text/html\n\n<!DOCTYPE html><html><head><title>404 NOT FOUND</title></head><body><h1>404 NOT FOUND</h1></body></html>";
+    //cout << "404 NOT FOUND" << endl;
     //----------------------
     // Send an initial buffer
-    iResult = write(socketfd,sendbuf,(int)strlen(sendbuf));
-    if (iResult<0)
-    {
-        //terminate the program when send fail with error
-        printf("send have failed with error.\n");
-        close(socketfd);
-        exit(1);
-    }
-    else
-    {
-        close(socketfd);
-        exit(0);
-    }
+    write(socketfd,sendbuf,(int)strlen(sendbuf));
+    close(socketfd);
+    exit(0);
 }
-void parse_request(int fd,char *sizeRequest,Objective& Obj)
+void request_parser(int fd,char *sizeRequest,Objective& Obj)
 {
     string reqMethod = "", target = "",version = "";
     char* range;
@@ -107,7 +84,7 @@ void parse_request(int fd,char *sizeRequest,Objective& Obj)
     strncpy(Obj.filename, target.c_str(), 200);
     strncpy(Obj.version, version.c_str(), 20);
 }
-void handle__request(int fd)
+void request_handler(int fd)
 {
     Objective obj;
     int sRecv;
@@ -115,43 +92,45 @@ void handle__request(int fd)
     char filename[50]={0};
     while(1)
     {
-        cout << "a connection was found.\n";
-        sRecv=read(fd, buffer, sizeof(buffer));
+        cout << "a connection was found.\n";//收到request
+        sRecv=read(fd, buffer, sizeof(buffer));//將request儲存於buffer
         cout << buffer << endl;
-        parse_request(fd, buffer, obj);
-        if(strcmp(obj.method, "GET")){
+        request_parser(fd, buffer, obj);
+        if(strcmp(obj.method, "GET")){//非GET，格式錯誤，回傳400
             cout << "wrong method" << endl;
             BADREQUEST(fd);
         }
-        if(strcmp(obj.version,"HTTP/1.1"))
+        if(strcmp(obj.version,"HTTP/1.1"))//版本錯誤，回傳400
         {
             cout << "wrong version" << endl;
             BADREQUEST(fd);
         }
         char contentType[30];
-        if(strstr(obj.filename, ".mp4") != NULL){
+        if(strstr(obj.filename, ".mp4") != NULL){//要求檔案類型為mp4，設定content type為video/mp4
             cout << "A Video request" << endl;
             strcpy(contentType, "video/mp4");
         }
-        else if(strstr(obj.filename, ".html") != NULL){
+        else if(strstr(obj.filename, ".html") != NULL){//要求檔案類型為html，設定content type為text/html
             cout << "A Text request" << endl;
             strcpy(contentType, "text/html");
         }
         char Resource[4096]={0};
-        if(strcmp(contentType, "video/mp4") == 0)
+        if(strcmp(contentType, "video/mp4") == 0)//以是否為影片進行不同的處理
         {
             FILE *reader = fopen(obj.filename, "rb+");//讀取影片檔案
             if(reader == NULL){
                 cout << obj.filename << ":does not exist" << endl;
-                NOTFOND(fd);
+                NOTFOND(fd);//檔案不存在，回傳404
                 exit(1);     
             }
             else
             {
+                //檔案存在，回傳200
                 cout << obj.filename << ":does  exist" << endl;
+                // 以fseek獲取文件大小好方便回傳Content Length
                 fseek(reader, 0L, SEEK_END);
                 int fileLength = ftell(reader);
-                fseek(reader, 0, SEEK_SET);
+                fseek(reader, 0, SEEK_SET); //將讀寫位置設為檔案的開頭
                 if(!obj.hasRange){  // 第一次先送header跟range
                     cout << "200 OK" << endl;
                     snprintf(Resource, 4096, "HTTP/1.1 200 OK\nContent-Type: %s\nContent-Length: %d\nAccept-Ranges: bytes\n\n", contentType, fileLength);
@@ -159,34 +138,34 @@ void handle__request(int fd)
                     send(fd, Resource, strlen(Resource), MSG_NOSIGNAL);
                     cout << "send header success" << endl;
                 }
-                else//以片段傳送後續影片
+                else//以斷點續傳方式傳送後續影片，每次傳送部分片段
                 {
-                    long contentLeft = fileLength - obj.start;
-                    int fragSize = 1024*64;
-                    int fragNum = contentLeft / fragSize;
+                    long contentLeft = fileLength - obj.start;//檔案剩餘大小
+                    int fragSize = 65536;//response的檔案大小(64KB)，64*1024=65536
+                    int fragNum = contentLeft / fragSize;//需要傳送的Response次數
                     if(contentLeft % fragSize != 0)
                     {
-                        fragNum++;
+                        fragNum++;//多增加一次response以處理餘數
                     }
                     for(int i = 0; i < fragNum; i++)
                     {
                         if(i+1 == fragNum)
                         {
-                            fragSize = fileLength - obj.start;
+                            fragSize = fileLength - obj.start; //將response大小重設以處理無法整除的剩餘部分
                         }
                         snprintf(Resource, 4096, "HTTP/1.1 206 Partial Content\nContent-Type: %s\nContent-Length: %d\nContent-Range: bytes %d-%d/%d\nAccept-Ranges: bytes\n\n",contentType, fragSize, obj.start, obj.start+fragSize-1, fileLength);
                         send(fd, Resource, strlen(Resource), MSG_NOSIGNAL);
                         char sizeBuffer[fragSize]={0};
-                        fseek(reader, obj.start, SEEK_SET);
+                        fseek(reader, obj.start, SEEK_SET);//將讀寫位置設為瀏覽器要求的位置
                         if(fread(sizeBuffer, 1, fragSize, reader) == 0){
                             cout << "read video file error." << endl;
                             exit(1);
                         }
                         else
                         {
-                            send(fd, sizeBuffer, sizeof(sizeBuffer), MSG_NOSIGNAL);
-                            obj.start += fragSize;
-                            memset(sizeBuffer, 0, sizeof(sizeBuffer));
+                            send(fd, sizeBuffer, fragSize, MSG_NOSIGNAL);
+                            obj.start += fragSize;//在response後移動下次要傳送的讀寫位置
+                            memset(sizeBuffer, 0, fragSize);//在每次寫入後清空buffer
                         }
                     }
                     cout << "Transfer video done" << endl;
@@ -198,26 +177,24 @@ void handle__request(int fd)
             FILE *reader = fopen(obj.filename, "r");
             if(reader == NULL){
                 cout << obj.filename << ":does not exist" << endl;
-                NOTFOND(fd);
+                NOTFOND(fd);//檔案不存在，回傳404
                 exit(1);     
             }
             else
             {
                 cout << obj.filename << ":does  exist" << endl;
                 fseek(reader, 0L, SEEK_END);
-                int fileLength = ftell(reader);
-                fseek(reader, 0, SEEK_SET);
-                
+                int fileLength = ftell(reader);//利用fseek取得檔案長度
+                fseek(reader, 0, SEEK_SET);    //將讀寫位置設為檔案的開頭
+                //檔案存在，回傳200
                 snprintf(Resource, 4096, "HTTP/1.1 200 OK\nContent-Type: %s\nContent-Length: %d\nAccept-Ranges: bytes\n\n", contentType, fileLength);
                 send(fd, Resource, strlen(Resource), MSG_NOSIGNAL);
-                cout << "header 200 OK" << endl;
                 char siezBuffer[fileLength]={0};
                 if(fread(siezBuffer, 1, fileLength, reader) == 0){
                     cout << "error.\n";
                     exit(1);
                 }
-                send(fd, siezBuffer, sizeof(siezBuffer), 0);
-                cout << "sending body\n";
+                send(fd, siezBuffer, fileLength, 0);
             }
         }
     }
@@ -262,8 +239,8 @@ int main()
         cout << "create socket success.\n";
     }
     serv_addr.sin_family = AF_INET;
-    serv_addr.sin_addr.s_addr = INADDR_ANY;
-    serv_addr.sin_port = htons(PORT_NUM);
+    serv_addr.sin_addr.s_addr = INADDR_ANY;//設定IP
+    serv_addr.sin_port = htons(PORT_NUM);//設定port
     if (bind(listenfd, (struct sockaddr *)&serv_addr,sizeof(serv_addr))<0)
     {
         cout << "Bind Fail.\n";
@@ -295,13 +272,13 @@ int main()
         /*連線成功*/
         pid_t id = fork();
         if(id == -1){
-            cout << "fork error.\n";//fork失敗
+            cout << "Fork Error.\n";//fork失敗，回傳-1，結束該程序
             return -1;
         }
-        if(id == 0){   // 子程序
+        if(id == 0){   // 子程序，負責處理request
             close(listenfd);
-            handle__request(socketfd);
-            exit(0);
+            request_handler(socketfd);
+            exit(0);//處理完畢，結束子程序
         }
         else if(id > 0){
             close(socketfd);

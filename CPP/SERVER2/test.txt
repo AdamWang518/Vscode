@@ -8,27 +8,24 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <sys/socket.h>
-#include <sys/wait.h>
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #define BUFSIZE 8096
 using namespace std;
 class Objective{
-public:
-    Objective(){};
-    char  method[512];
-    char  filename[512];
-    char  version[512];
-    bool  hasRange;
-    int   size;
-    int   start;
+    public:
+        char  method[1024];
+        char  filename[1024];
+        char  version[1024];
+        bool  hasRange;
+        int   size;
+        int   start;
 };
 int BADREQUEST(int socketfd)
 {
-    const char *sendbuf = "HTTP/1.0 400 BAD REQUEST\nContent-Type: text/html\n\n<!DOCTYPE html><html><head><title>400 BAD REQUEST</title></head><body><h1>400 BAD REQUEST</h1></body></html>";;
+    const char *sendbuf = "HTTP/1.0 400 BAD REQUEST\nContent-Type: text/html\n\n<!DOCTYPE html><html><head><title>400 BAD REQUEST</title></head><body><h1>400 BAD REQUEST</h1></body></html>";
     //printf("Send buf to client (0x%x) \n", &sendbuf);
-    cout << "400 BAD REQUEST" << endl;
     int iResult;
     //----------------------
     // Send an initial buffer
@@ -48,9 +45,8 @@ int BADREQUEST(int socketfd)
 }
 int NOTFOND(int socketfd)
 {
-    const char *sendbuf = "HTTP/1.0 404 NOT FOUND\nContent-Type: text/html\n\n<!DOCTYPE html><html><head><title>404 NOT FOUND</title></head><body><h1>404 NOT FOUND</h1></body></html>";;
+    const char *sendbuf = "HTTP/1.0 404 NOT FOUND\nContent-Type: text/html\n\n<!DOCTYPE html><html><head><title>404 NOT FOUND</title></head><body><h1>404 NOT FOUND</h1></body></html>";
     //printf("Send buf to client (0x%x) \n", &sendbuf);
-    cout << "404 NOT FOUND" << endl;
     int iResult;
     //----------------------
     // Send an initial buffer
@@ -68,29 +64,31 @@ int NOTFOND(int socketfd)
         exit(0);
     }
 }
-void parse_request(int fd,char *sizeRequest,Objective& Obj)
+void request_parser(int fd,char *sizeRequest,Objective Obj)
 {
-    string reqMethod = "", target = "",version = "";
+    string reqMethod = "";
+    string target = "";
+    string version = "";
     char* range;
     char *request;
-    if((range = strstr(sizeRequest, "Range: bytes=")) == NULL){
-        cout << "no range in this request." << endl;//儲存該request沒有range的事實
-        Obj.hasRange = false;
+    if((range = strstr(sizeRequest, "Range: bytes=")) == NULL){//利用strstr比對有無Range
+        cout << "no range in this request." << endl;
+        Obj.hasRange = false;//儲存該request沒有range的事實
         Obj.start = 0;
     }
     else{
         cout << "find out range in this request." << endl;
-        range = range + 13;//將range指向第一個數字
+        range += 13; //將range指向第一個數字
         range = strtok(range, "-");
-        Obj.hasRange = true;
-        string start = range;//儲存該request有range的事實
+        Obj.hasRange = true;//儲存該request有range的事實
+        string start = range;
         Obj.start = stoi(range);
         cout << "start at: " << Obj.start << endl;
     }
     request = strtok(sizeRequest, " ");//擷取使用的method
     reqMethod += request;
     cout << reqMethod << endl;
-    request = strtok(NULL, " ");    //擷取檔名
+    request = strtok(NULL, " ");    //擷取檔名與路徑
     if(request == NULL){    //沒有要求，格式錯誤
         BADREQUEST(fd);
     }
@@ -103,11 +101,11 @@ void parse_request(int fd,char *sizeRequest,Objective& Obj)
     }
     version += request;
     cout << version << endl;
-    strncpy(Obj.method, reqMethod.c_str(), 20);
-    strncpy(Obj.filename, target.c_str(), 200);
-    strncpy(Obj.version, version.c_str(), 20);
+    strcpy(Obj.method, reqMethod.c_str());
+    strcpy(Obj.filename, target.c_str());
+    strcpy(Obj.version, version.c_str());
 }
-void handle__request(int fd)
+void request_handler(int fd)
 {
     Objective obj;
     int sRecv;
@@ -115,51 +113,58 @@ void handle__request(int fd)
     char filename[50]={0};
     while(1)
     {
-        cout << "a connection was found.\n";
-        sRecv=read(fd, buffer, sizeof(buffer));
-        cout << buffer << endl;
-        parse_request(fd, buffer, obj);
-        if(strcmp(obj.method, "GET")){
-            cout << "wrong method" << endl;
+        cout << "a connection was found."<<endl;//收到request
+        sRecv=read(fd, buffer, sizeof(buffer));//將request儲存於buffer
+        //cout << buffer << endl;
+        request_parser(fd, buffer, obj);//拆分request
+        if(strcmp(obj.method, "GET")&&strcmp(obj.method, "get")){
+            cout << "wrong method" << endl;//非GET或get，格式錯誤，回傳400
             BADREQUEST(fd);
         }
         if(strcmp(obj.version,"HTTP/1.1"))
         {
-            cout << "wrong version" << endl;
+            cout << "wrong version" << endl;//版本錯誤，回傳400
             BADREQUEST(fd);
         }
         char contentType[30];
-        if(strstr(obj.filename, ".mp4") != NULL){
+        if(strstr(obj.filename, ".mp4") != NULL){//要求檔案類型為mp4，設定content type為video/mp4
             cout << "A Video request" << endl;
             strcpy(contentType, "video/mp4");
         }
-        else if(strstr(obj.filename, ".html") != NULL){
+        else if(strstr(obj.filename, ".html") != NULL){//要求檔案類型為html，設定content type為text/html
+            cout << "A Text request" << endl;
+            strcpy(contentType, "text/html");
+        }
+        else if(strstr(obj.filename, ".txt") != NULL){//要求檔案類型為txt，設定content type為text/html
             cout << "A Text request" << endl;
             strcpy(contentType, "text/html");
         }
         char Resource[4096]={0};
-        if(strcmp(contentType, "video/mp4") == 0)
+        if(strcmp(contentType, "video/mp4") == 0)//以是否為影片進行不同的處理
         {
+            //是影片
             FILE *reader = fopen(obj.filename, "rb+");//讀取影片檔案
             if(reader == NULL){
                 cout << obj.filename << ":does not exist" << endl;
-                NOTFOND(fd);
+                NOTFOND(fd); //檔案不存在，回傳404
                 exit(1);     
             }
             else
             {
+                //檔案存在，回傳200
                 cout << obj.filename << ":does  exist" << endl;
+                // 獲取文件大小好方便回傳Content Length
                 fseek(reader, 0L, SEEK_END);
                 int fileLength = ftell(reader);
                 fseek(reader, 0, SEEK_SET);
-                if(!obj.hasRange){  // 第一次先送header跟range
+                if(!obj.hasRange){  // 第一次先送header跟range還有length
                     cout << "200 OK" << endl;
                     snprintf(Resource, 4096, "HTTP/1.1 200 OK\nContent-Type: %s\nContent-Length: %d\nAccept-Ranges: bytes\n\n", contentType, fileLength);
                     cout << Resource << endl;
                     send(fd, Resource, strlen(Resource), MSG_NOSIGNAL);
                     cout << "send header success" << endl;
                 }
-                else//以片段傳送後續影片
+                else //以片段方式(206)傳送後續影片
                 {
                     long contentLeft = fileLength - obj.start;
                     int fragSize = 1024*64;
@@ -197,27 +202,25 @@ void handle__request(int fd)
         {
             FILE *reader = fopen(obj.filename, "r");
             if(reader == NULL){
-                cout << obj.filename << ":does not exist" << endl;
+                cout << obj.filename << ":file does not exist" << endl;
                 NOTFOND(fd);
                 exit(1);     
             }
             else
             {
-                cout << obj.filename << ":does  exist" << endl;
+                cout << obj.filename << ":file does  exist" << endl;
                 fseek(reader, 0L, SEEK_END);
                 int fileLength = ftell(reader);
                 fseek(reader, 0, SEEK_SET);
-                
                 snprintf(Resource, 4096, "HTTP/1.1 200 OK\nContent-Type: %s\nContent-Length: %d\nAccept-Ranges: bytes\n\n", contentType, fileLength);
                 send(fd, Resource, strlen(Resource), MSG_NOSIGNAL);
-                cout << "header 200 OK" << endl;
                 char siezBuffer[fileLength]={0};
                 if(fread(siezBuffer, 1, fileLength, reader) == 0){
                     cout << "error.\n";
                     exit(1);
                 }
                 send(fd, siezBuffer, sizeof(siezBuffer), 0);
-                cout << "sending body\n";
+                cout << "Transfer html done" << endl;
             }
         }
     }
@@ -262,8 +265,8 @@ int main()
         cout << "create socket success.\n";
     }
     serv_addr.sin_family = AF_INET;
-    serv_addr.sin_addr.s_addr = INADDR_ANY;
-    serv_addr.sin_port = htons(PORT_NUM);
+    serv_addr.sin_addr.s_addr = INADDR_ANY;//設定IP
+    serv_addr.sin_port = htons(PORT_NUM);//設定使用的PROT
     if (bind(listenfd, (struct sockaddr *)&serv_addr,sizeof(serv_addr))<0)
     {
         cout << "Bind Fail.\n";
@@ -289,18 +292,18 @@ int main()
         /* 等待客戶端連線 */
         if ((socketfd = accept(listenfd, (struct sockaddr *)&cli_addr, &length))<0)
         {
-            cout << "Accept Fail.\n";
+            cout << "Accept Fail." << endl;
             exit(1);
         }
         /*連線成功*/
         pid_t id = fork();
         if(id == -1){
-            cout << "fork error.\n";//fork失敗
+            cout << "fork error." << endl; //fork失敗
             return -1;
         }
         if(id == 0){   // 子程序
             close(listenfd);
-            handle__request(socketfd);
+            request_handler(socketfd);
             exit(0);
         }
         else if(id > 0){

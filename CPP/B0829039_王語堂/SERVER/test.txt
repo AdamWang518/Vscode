@@ -1,1 +1,0 @@
-<style>body{background: #ffffff;margin: 0;}</style>Hello, world

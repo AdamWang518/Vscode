@@ -16,7 +16,7 @@ struct zt ztarr[MAX];
 struct zt costList[MAX];
 int maxcost = INT_MAX;
 int Index=0;
-
+int count;
 int numpass=0;
 int start_c,start_y;
 
@@ -40,25 +40,18 @@ int handle(zt t)
             printf("%2d\t",ztarr[i].cost);
 			printf("\n");
 		}
-        if(ztarr[i].cost<maxcost)
+        if(ztarr[Index].cost<maxcost)
         {
-            for(i = 0; i < MAX ; i++)
+            count = Index;
+            maxcost = ztarr[Index].cost;
+            for(i = 0; i <= count ; i++)
             {
-                costList[i].left_c = 0;
-                costList[i].left_y = 0;
-                costList[i].right_c = 0;
-                costList[i].right_y = 0;
-                costList[i].boat_location = -1;
-                costList[i].cost = 0;
-            }
-            for(i = 0; i < MAX ; i++)
-            {
-                costList[i].left_c=ztarr[i].left_c;
-                costList[i].left_y = ztarr[i].left_y;
+                costList[i].left_c = ztarr[i].left_c;
+                costList[i].left_y=ztarr[i].left_y;
                 costList[i].right_c=ztarr[i].right_c;
                 costList[i].right_y=ztarr[i].right_y;
-                costList[i].boat_location =ztarr[i].boat_location;
-                costList[i].cost =ztarr[i].cost;
+                costList[i].boat_location=ztarr[i].boat_location;
+                costList[i].cost=ztarr[i].cost;
             }
         }
 		//找到多條路徑的關鍵一
@@ -168,6 +161,19 @@ int main()
     ztarr[Index].cost = 0;
 	handle(ztarr[Index]);
 	printf("已為您找到%d條過河路徑！並且已全部載入完畢！\n",numpass);
+    printf("\n找到最低成本路徑！\n");
+    printf("左傳\t左野\t右傳\t右野\t船\t錢\n");
     
+    for (int j = 0; j <= count ; j++)
+    {
+        printf("%2d\t",costList[j].left_c);
+		printf("%2d\t",costList[j].left_y);
+		printf("%2d\t",costList[j].right_c);
+		printf("%2d\t",costList[j].right_y);
+		printf("%2d\t",costList[j].boat_location);
+        printf("%2d\t",costList[j].cost);
+		printf("\n"); 
+    }
+    cout <<"花費:"<< maxcost <<"元"<< endl;
     return 0;
 }

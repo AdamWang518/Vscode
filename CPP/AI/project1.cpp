@@ -14,9 +14,12 @@ struct zt
 };
 struct zt ztarr[MAX];
 struct zt costList[MAX];
+struct zt stepList[MAX];
 int maxcost = INT_MAX;
+int maxstep = INT_MAX;
 int Index=0;
 int count;
+
 int numpass=0;
 int start_c,start_y;
 
@@ -63,6 +66,19 @@ int handle(zt t)
                 costList[i].cost=ztarr[i].cost;
             }
         }
+		if(Index<maxstep)
+		{
+			maxstep = Index;
+			for(i = 0; i <= maxstep ; i++)
+            {
+                stepList[i].right_m = ztarr[i].right_m;
+                stepList[i].right_c=ztarr[i].right_c;
+                stepList[i].left_m=ztarr[i].left_m;
+                stepList[i].left_c=ztarr[i].left_c;
+                stepList[i].boat_location=ztarr[i].boat_location;
+                stepList[i].cost=ztarr[i].cost;
+            }
+		}
 		//找到多條路徑的關鍵一
 		return 0;
 	}
@@ -193,5 +209,27 @@ int main()
 		printf("\n"); 
     }
     cout <<"花費:"<< maxcost <<"元"<< endl;
+	printf("\n找到最少次數路徑！\n");
+    printf("左傳\t左野\t右傳\t右野\t船\t錢\n");
+	for (int j = 0; j <= maxstep ; j++)
+    {
+        
+		printf("%2d\t",stepList[j].left_m);
+		printf("%2d\t",stepList[j].left_c);
+        printf("%2d\t",stepList[j].right_m);
+		printf("%2d\t",stepList[j].right_c);
+        if(stepList[j].boat_location==1)
+        {
+            printf("右\t");
+        }
+        else if(stepList[j].boat_location==-1)
+        {
+            printf("左\t");
+        }
+
+        printf("%2d\t",stepList[j].cost);
+		printf("\n"); 
+    }
+	printf("共%d步",maxstep+1);
     return 0;
 }

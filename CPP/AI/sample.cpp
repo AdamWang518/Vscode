@@ -7,7 +7,7 @@ struct zt
 	int left_m;
 	int right_c;
 	int left_c;
-	int boat_location;
+	int boat1_location;
 };
 struct zt ztarr[MAX];
 int Index=0;
@@ -30,7 +30,7 @@ int handle(zt t)
 			printf("%2d\t",ztarr[i].right_c);
 			printf("%2d\t",ztarr[i].left_m);
 			printf("%2d\t",ztarr[i].left_c);
-			printf("%2d\t",ztarr[i].boat_location);
+			printf("%2d\t",ztarr[i].boat1_location);
 			printf("\n");
 		}
 		//找到多條路徑的關鍵一
@@ -41,7 +41,7 @@ int handle(zt t)
 	{
 		if(t.right_m == ztarr[i].right_m && t.right_c == ztarr[i].right_c)
 		{
-			if(t.boat_location == ztarr[i].boat_location)
+			if(t.boat1_location == ztarr[i].boat1_location)
 			{
 				return 0;
 			}
@@ -63,11 +63,11 @@ int handle(zt t)
 	struct zt tt;
 
 	//兩個傳教士過河
-	tt.right_m = t.right_m - 2 * t.boat_location;
+	tt.right_m = t.right_m - 2 * t.boat1_location;
 	tt.right_c = t.right_c;
-	tt.left_m = t.left_m + 2 * t.boat_location;
+	tt.left_m = t.left_m + 2 * t.boat1_location;
 	tt.left_c = t.left_c;
-	tt.boat_location = ( -t.boat_location);
+	tt.boat1_location = ( -t.boat1_location);
 	Index = Index + 1;
 	ztarr[Index] = tt;
 	handle(ztarr[Index]);
@@ -75,32 +75,32 @@ int handle(zt t)
 	
 	//兩個野人過河
 	tt.right_m = t.right_m;
-	tt.right_c = t.right_c - 2 * t.boat_location;
+	tt.right_c = t.right_c - 2 * t.boat1_location;
 	tt.left_m = t.left_m ;
-	tt.left_c = t.left_c + 2 * t.boat_location;
-	tt.boat_location = ( -t.boat_location);
+	tt.left_c = t.left_c + 2 * t.boat1_location;
+	tt.boat1_location = ( -t.boat1_location);
 	Index = Index + 1;
 	ztarr[Index] = tt;
 	handle(ztarr[Index]);
 	Index = Index-1;	
 
 	//一個野人，一個傳教士過河
-	tt.right_m = t.right_m - 1 * t.boat_location;
-	tt.right_c = t.right_c - 1 * t.boat_location;
-	tt.left_m = t.left_m + 1 * t.boat_location;
-	tt.left_c = t.left_c + 1 * t.boat_location;
-	tt.boat_location = ( -t.boat_location);
+	tt.right_m = t.right_m - 1 * t.boat1_location;
+	tt.right_c = t.right_c - 1 * t.boat1_location;
+	tt.left_m = t.left_m + 1 * t.boat1_location;
+	tt.left_c = t.left_c + 1 * t.boat1_location;
+	tt.boat1_location = ( -t.boat1_location);
 	Index = Index + 1;
 	ztarr[Index] = tt;
 	handle(ztarr[Index]);
 	Index = Index-1;
 
 	//一個傳教士過河
-	tt.right_m = t.right_m - 1 * t.boat_location;
+	tt.right_m = t.right_m - 1 * t.boat1_location;
 	tt.right_c = t.right_c;
-	tt.left_m = t.left_m + 1 * t.boat_location;
+	tt.left_m = t.left_m + 1 * t.boat1_location;
 	tt.left_c = t.left_c;
-	tt.boat_location = ( -t.boat_location);
+	tt.boat1_location = ( -t.boat1_location);
 	Index = Index + 1;
 	ztarr[Index] = tt;
 	handle(ztarr[Index]);
@@ -108,10 +108,10 @@ int handle(zt t)
 
 	//一個野人過河
 	tt.right_m = t.right_m;
-	tt.right_c = t.right_c - 1 * t.boat_location;
+	tt.right_c = t.right_c - 1 * t.boat1_location;
 	tt.left_m = t.left_m;
-	tt.left_c = t.left_c + 1 * t.boat_location;
-	tt.boat_location = ( -t.boat_location);
+	tt.left_c = t.left_c + 1 * t.boat1_location;
+	tt.boat1_location = ( -t.boat1_location);
 	Index = Index + 1;
 	ztarr[Index] = tt;
 	handle(ztarr[Index]);
@@ -131,7 +131,7 @@ int main()
 	ztarr[Index].right_c = start_y;
 	ztarr[Index].left_m = 0;
 	ztarr[Index].left_c = 0;
-	ztarr[Index].boat_location = 1;
+	ztarr[Index].boat1_location = 1;
 	handle(ztarr[Index]);
 	printf("已為您找到%d條過河路徑！並且已全部載入完畢！\n",numpass);
     return 0;

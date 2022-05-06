@@ -34,10 +34,7 @@ def sorte_by_floss():
                     tmp_open[i] = tmp_open[j]
                     tmp_open[j] = tmp
     opened.queue = tmp_open
-    print("SortedOpenedList:{")
-    for i in opened.queue:  
-        print(i.data)
-    print("}")
+    
 
 '算法'
 opened = queue.Queue()  # open表
@@ -69,10 +66,6 @@ def refresh_open(now_node):
                 return True
     tmp_open.append(now_node)
     opened.queue = tmp_open  # 更新之后的open表还原
-    print("RefreshOpenedList:{")
-    for i in opened.queue:  
-        print(i.data)
-    print("}")
     return True
 
 

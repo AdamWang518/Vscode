@@ -24,6 +24,7 @@ struct Node
 
 deque<Node> opened_list;
 vector<int> closed_list;
+deque<Node> output_closed_list;
 Node *step_list = NULL;
 Node *more_step_list = NULL;
 int step_list_count = 0;
@@ -100,13 +101,10 @@ void check_openlist()
 }
 void check_closelist(){
     cout <<"close list "<< countt << ":";
-    for (int i;i < closed_list.size();i++)
-    {
-        int m =  closed_list[i] / 100 % 10;//提取m
-        int c= closed_list[i]  / 10 % 10;
-        int b = closed_list[i] / 1 % 10;
-        cout << m << " " << c << " " << b << " " << "/";
-    }
+    for (deque<Node>::iterator it = output_closed_list.begin(); it != output_closed_list.end(); it++)
+	{
+		cout << it->m << " " << it->c << " " << it->b << " " << it->step << "/";
+	}
     cout << endl;
 }
 void refresh_opened(Node n)
@@ -177,7 +175,8 @@ void a_star_algorithm(Node &result)
 
 		// 將取出的點加入closed_list中
 		closed_list.push_back(cal_value(node));
-		for (int i = 0; i <= shore_m; i++)
+        output_closed_list.push_back(node);
+        for (int i = 0; i <= shore_m; i++)
 		{ // i代表上船的傳教士數量
 			for (int j = 0; j <= shore_c; j++)
 			{ // j代表上船的食人魔數量

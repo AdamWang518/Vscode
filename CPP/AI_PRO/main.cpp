@@ -143,12 +143,18 @@ void a_star_algorithm(Node &result)
 		cout << endl;
 		cout << "choose node state:" << node.m << " " << node.c << " " << node.b << " " << node.step << endl;
 
+		
 		if (counter >= 2)
         {
-            cout << "node parent state:" << node.parent->m << " " << node.parent->c << " " << node.parent->b << " " << node.parent->step << endl;
-            check_closelist();
+            if(node.parent!=NULL){
+                cout << "node parent state:" << node.parent->m << " " << node.parent->c << " " << node.parent->b << " " << node.parent->step << endl;
+            }
+            
         }
-			
+		if (counter >= 2)
+        {
+            check_closelist();
+        }	
 		counter++;
         
 		// 判斷取出的點是否為目標點

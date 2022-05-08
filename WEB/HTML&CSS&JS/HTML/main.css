@@ -1,0 +1,19 @@
+.button{
+    display: inline-block;
+    width: 100px;
+    height: 35px;
+    line-height: 35px;
+    border-radius: 5px;
+    color:white;
+    background-color: aqua;
+    text-align: center;
+    box-shadow:0 0 0 0 #d1d1d1;
+}
+.button:hover{
+    background-color: pink;
+    box-shadow:2px 2px 3px 1px #d1d1d1;
+    
+}
+.button:active{
+    background-color: black;
+}

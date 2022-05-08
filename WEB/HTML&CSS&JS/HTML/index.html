@@ -1,0 +1,46 @@
+<!DOCTYPE html><!--檔案型別-->
+<html lang="zh-tw"><!--語言語系(給爬蟲看)-->
+<head><!--設定都在這裡-->
+    <!--可以用來加標籤讓搜尋引擎更好找到-->
+    <meta charset="UTF-8"><!--編碼方式-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><!--網頁寬度-->
+    <title>你好</title><!--分頁標題-->
+    <link rel="icon" href="button.jpg" type="image/x-icon"  >
+    <style>
+        div{
+            width: 500px;
+            display: inline-block;
+        }
+        /* class */
+        .item1 {
+            background-color: black;
+            color:white;
+
+        }
+        /* id */
+        #item1 {
+            background-color: purple;
+            color:palegoldenrod;
+        }
+    </style>
+    <link rel="stylesheet" href="main.css">
+</head><!--還可以加fab icon-->
+<body>
+    <!-- display: block inline  inline-block -->
+    <!-- block: 區塊，整行的區塊 -->
+    <!-- inline:不是區塊，根據內容來決定長度 -->
+    <!-- inline-block: 區塊，預設根據內容來決定長度，也可以自行調整 -->
+    <!-- css priority: 如何明確指定該element-->
+    <!-- style > id > class > tag -->
+    <!--同級情況，以最左邊為主 -->
+    <!--如有必要可加上!important強制提升優先級，但如非必要不該用-->
+    <div id="item1">HELLO</div>
+    <div class="item1">world</div>
+    <div style="background-color: pink;
+    color:palegoldenrod;">line</div>
+    <input type="date">
+    <div class="button">button</div>
+    
+</body>
+</html>

@@ -62,7 +62,7 @@ void check_openlist()
 {
 	cout<<"openlist:";
  	for(deque<Node>::iterator it=opened_list.begin(); it!=opened_list.end();it++){
-  		cout << it->m << " " << it->c << " " << it->b << " " << it->step<<"/";
+  		cout << it->m << " " << it->c << " " << it->b << " "<<it->B<<" " << it->step<<"/";
  	}
  	cout << endl;
 }
@@ -76,13 +76,43 @@ void check_closelist()
     }
     for (int i = 0; i < closed_list.size();i++)
     {
-        cout << closed_list[i].m << " " << closed_list[i].c << " " << closed_list[i].b << " " << closed_list[i].step<<"/";
+        cout << closed_list[i].m << " " << closed_list[i].c << " " << closed_list[i].b << " "<<closed_list[i].B << " " << closed_list[i].step<<"/";
     }
     cout << endl;
 }
+
+template<typename T>
+void sort_bubble(deque<T>& dq)
+{
+	int exchg=0;
+	int capa=dq.size();
+	T arrtmp[capa];
+	for(int i=0;i<capa;++i){
+		T dqcur=dq.back();
+		dq.pop_back();
+		arrtmp[i]=dqcur;
+	}
+	T tmp;
+	for(int i=0;i<capa;++i){
+		exchg=0;
+		for(int j=capa-1;j>=i;--j){
+			if(arrtmp[j].f_loss<arrtmp[j-1].f_loss){
+				tmp=arrtmp[j];
+				arrtmp[j]=arrtmp[j-1];
+				arrtmp[j-1]=tmp;
+				exchg=1;
+			}
+		}
+		if(exchg!=1)
+			break;
+	}
+	for(int i=0;i<capa;++i){
+		dq.push_back(arrtmp[i]);	
+	}
+ 
+}
 void sort_by_floss()
 { 
-	check_openlist();
 	// 將opened_list內的點按照分數大小排序
 	for(auto i=opened_list.begin(); i!=opened_list.end(); i++){
 		for(auto j=i+1; j!=opened_list.end(); j++){
@@ -93,6 +123,7 @@ void sort_by_floss()
 				swap(i, j);
 		}
 	}
+    check_openlist();
 }
 
 void refresh_opened(Node *n)

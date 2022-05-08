@@ -145,30 +145,6 @@ void print_node(Node* node){	// 印出節點資訊
 void output_result(){
 	vector<Node> path;
 	Node* ptr = &closed_list.back();
-	if(mode==true)// true:最短步數 false:最少花費
-	{
-		printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\t\n", 
-		"步驟數",
-		"左岸傳教士", 
-		"左岸食人魔", 
-		"A船位置",
-		"B船位置",
-		"右岸傳教士",
-		"右岸食人魔"
-		);
-	}
-	else
-	{
-		printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\t\n", 
-		"花費",
-		"左岸傳教士", 
-		"左岸食人魔", 
-		"A船位置",
-		"B船位置",
-		"右岸傳教士",
-		"右岸食人魔"
-		);
-	}
 	while(ptr!=nullptr){
 		print_node(ptr);
 		ptr = ptr->parent;

@@ -109,7 +109,7 @@ void sort_bubble(deque<T>& dq)
 	for(int i=0;i<capa;++i){
 		dq.push_back(arrtmp[i]);	
 	}
- 
+    check_openlist();
 }
 void sort_by_floss()
 { 
@@ -145,7 +145,8 @@ void a_star_algorithm()
 {
 	while (opened_list.size() != 0)
 	{
-		// 從opened_list中取出分數最小的
+        sort_bubble(opened_list);
+        // 從opened_list中取出分數最小的
 		Node node;
 		node = opened_list.front();
 		opened_list.pop_front();
@@ -281,7 +282,7 @@ void a_star_algorithm()
 				}
 			}
 		}
-		sort_by_floss();
+		
 	}
 }
 void output()
@@ -289,7 +290,7 @@ void output()
 	Node *current = &closed_list.back();
 	while (current != NULL)
 	{
-		cout << "步數:" << current->step << "左岸傳教士:" << m_num - current->m << "左岸食人族:" << c_num - current->c << "右岸傳教士:" <<current->m  << "右岸食人族:" << current->c << "\tA船位:";
+		cout << "步數:" << current->step << "左岸傳教士:" << current->m << "左岸食人族:" << current->c << "右岸傳教士:" <<m_num - current->m  << "右岸食人族:" << c_num - current->c << "\tA船位:";
 		if (current->b == 1)
 			cout << "右" ;
 		else
@@ -311,7 +312,14 @@ int main(int argc, char const *argv[])
 	// cin >> m_num;
 	// cout << "請輸入初始野人人數：";
 	// cin >> c_num;
-
+    int x;
+    cout << "\n1.最短步數\n2.最少花費\n\n請選擇模式: ";
+	cin >> x;
+	while(x!=1 && x!=2){
+		cout << "輸入的數字錯誤，請重試。\n";
+		cout << "\n1.最短步數\n2.最少花費\n\n請選擇模式: ";
+		cin >> x;
+	}
 	closed_list.reserve((m_num + 1) * (c_num + 1) * 2 + 1); //解決記憶體位址跳掉的問題
 	Node start_node(m_num, c_num, 1, 1, 0, 0, 0, nullptr);	//初始化
 	opened_list.push_back(start_node);

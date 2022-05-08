@@ -136,8 +136,8 @@ void print_node(Node* node){	// 印出節點資訊
 		mode ? node->step:node->cost,
 		node->m, 
 		node->c, 
-		(node->a==1) ? "左":"右",
-		(node->b==1) ? "左":"右",
+		(node->a==1) ? "右":"左",
+		(node->b==1) ? "右":"左",
 		m_num-node->m,
 		c_num-node->c
 	);

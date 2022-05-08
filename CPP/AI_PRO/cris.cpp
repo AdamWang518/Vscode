@@ -67,6 +67,38 @@ bool in_closed_list(Node* node){	// 確認是否已經在closed_list內
 	return false;
 }
 
+
+void refresh_opened(Node* n){	// 如果節點有較低的分數或步數，更新opened_list
+	for(auto x: opened_list){
+		if(x.m==n->m && x.c==n->c && x.a==n->a && x.b==n->b){
+			if(n->f_loss<x.f_loss){
+				n->f_loss = x.f_loss;
+			}
+			return;
+		}
+	}
+	opened_list.push_back(Node(n->m, n->c, n->a, n->b, n->step, n->cost, n->parent));
+}
+void check_openlist(){
+	cout<<"open list:";
+ 	for(deque<Node>::iterator it=opened_list.begin(); it!=opened_list.end();it++){
+  		cout << it->m << " " << it->c << " " << it->a << " "<<it->b << " " << it->step<<"/";
+ 	}
+ 	cout << endl;
+}
+void check_closedlist(){	
+ 	cout<<"closed list:";
+    if(closed_list.size()==0)
+    {
+        cout << endl;
+        return;
+    }
+    for (int i = 0; i < closed_list.size();i++)
+    {
+        cout << closed_list[i].m << " " << closed_list[i].c << " " << closed_list[i].a << " "<<closed_list[i].b << " " << closed_list[i].step<<"/";
+    }
+	cout << endl;
+}
 template<typename T>
 void sort_bubble(deque<T>& dq)
 {
@@ -95,32 +127,11 @@ void sort_bubble(deque<T>& dq)
 	for(int i=0;i<capa;++i){
 		dq.push_back(arrtmp[i]);	
 	}
- 
-}
-void refresh_opened(Node* n){	// 如果節點有較低的分數或步數，更新opened_list
-	for(auto x: opened_list){
-		if(x.m==n->m && x.c==n->c && x.a==n->a && x.b==n->b){
-			if(n->f_loss<x.f_loss){
-				n->f_loss = x.f_loss;
-			}
-			return;
-		}
-	}
-	opened_list.push_back(Node(n->m, n->c, n->a, n->b, n->step, n->cost, n->parent));
-}
-void check_openlist(){
- 	for(deque<Node>::iterator it=opened_list.begin(); it!=opened_list.end();it++){
-  		cout << it->m << " " << it->c << " " << it->b << " " << it->step<<"/";
- 	}
- 	cout << endl;
-}
-void check_closedlist(){	
- 	for(int i=0; i<closed_list.size(); i++){
-  		print_node(&closed_list[i]);
- 	}
+	check_openlist();
 }
 /* 輸出類函式 */
 void print_node(Node* node){	// 印出節點資訊
+	
 	printf("%d\t%d\t%d\t%s\t%s\t%d\t%d\t\n", 
 		mode ? node->step:node->cost,
 		node->m, 
@@ -134,6 +145,30 @@ void print_node(Node* node){	// 印出節點資訊
 void output_result(){
 	vector<Node> path;
 	Node* ptr = &closed_list.back();
+	if(mode==true)// true:最短步數 false:最少花費
+	{
+		printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\t\n", 
+		"步驟數",
+		"左岸傳教士", 
+		"左岸食人魔", 
+		"A船位置",
+		"B船位置",
+		"右岸傳教士",
+		"右岸食人魔"
+		);
+	}
+	else
+	{
+		printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\t\n", 
+		"花費",
+		"左岸傳教士", 
+		"左岸食人魔", 
+		"A船位置",
+		"B船位置",
+		"右岸傳教士",
+		"右岸食人魔"
+		);
+	}
 	while(ptr!=nullptr){
 		print_node(ptr);
 		ptr = ptr->parent;
@@ -142,6 +177,7 @@ void output_result(){
 /* 主要演算法 */
 void a_star_algorithm(){
 	while(opened_list.size() != 0){
+		sort_bubble(opened_list);
 		// check_openlist();
 		// 從opened_list中取出分數最小的
 		Node node;
@@ -150,10 +186,13 @@ void a_star_algorithm(){
 
 		// 將取出的點加入closed_list中
 		// closed_list.push_back(cal_value(&node));
+
+		check_closedlist();
 		closed_list.push_back(Node(node.m, node.c, node.a, node.b, node.step, node.cost, node.parent));
 		// 判斷取出的點是否為目標點
 		if(node.m == 0 && node.c == 0){
-			output_result();
+			//output_result();
+			return;
 		}
 
 		int carry_max_number = (A_MAX_CAPACITY>B_MAX_CAPACITY) ? A_MAX_CAPACITY : B_MAX_CAPACITY;
@@ -181,7 +220,7 @@ void a_star_algorithm(){
 				}
 			}
 		}
-		sort_bubble(opened_list);
+		
 	}
 
 }
@@ -213,6 +252,7 @@ int main(int argc, char const *argv[]){
 
 	// check_closedlist();
 	// cout << endl;
+
 	output_result();
 
 	// m_num = 2;

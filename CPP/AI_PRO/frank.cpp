@@ -6,7 +6,7 @@
 #include <Windows.h>
 
 using namespace std;
-
+bool mode;//模式
 struct Node
 {
 	int m;
@@ -15,14 +15,20 @@ struct Node
 	int B;		 // B船狀態，1:左，0:右
 	int b_count; // A船次數
 	int B_count; // B船次數
+    int cost;
 	int step;
 	double f_loss;
 	Node *parent;
-	Node(int m_num, int c_num, int A_boat_state, int B_boat_state, int bcount, int Bcount, int step_count, Node *ptr) : m{m_num}, c{c_num}, b{A_boat_state}, B{B_boat_state}, b_count{bcount}, B_count{Bcount}, step{step_count}, parent{ptr}
+	Node(int m_num, int c_num, int A_boat_state, int B_boat_state, int bcount, int Bcount, int step_count, int cost_num, Node *ptr) : m{m_num}, c{c_num}, b{A_boat_state}, B{B_boat_state}, b_count{bcount}, B_count{Bcount}, step{step_count}, cost{cost_num}, parent{ptr}
 	{
-		f_loss = (m + c) / 2;
+		//uniform
+        // f_loss = step;
+        // f_loss = b_count * 3 + B_count * 25;
+        //a*
+        // f_loss = step+(m + c) / 2;
+        f_loss = b_count * 3 + B_count * 25 + (m+c)*5;
 	}
-	Node(): m{0}, c{0}, b{0}, B{0}, b_count{0}, B_count{0}, step{0}, f_loss{0}, parent{nullptr} {};
+	Node(): m{0}, c{0}, b{0}, B{0}, b_count{0}, B_count{0}, step{0}, f_loss{0},cost{0}, parent{nullptr} {};
 };
 
 deque<Node> opened_list;
@@ -111,6 +117,7 @@ void sort_bubble(deque<T>& dq)
 	}
     check_openlist();
 }
+
 void sort_by_floss()
 { 
 	// 將opened_list內的點按照分數大小排序
@@ -139,20 +146,23 @@ void refresh_opened(Node *n)
 			return;
 		}
 	}
-	opened_list.push_back(Node(n->m, n->c, n->b,n->B,n->b_count,n->B_count, n->step, n->parent));
+	opened_list.push_back(Node(n->m, n->c, n->b,n->B,n->b_count,n->B_count, n->step,n->cost, n->parent));
 }
 void a_star_algorithm()
 {
 	while (opened_list.size() != 0)
 	{
+        
+        //sort_by_floss();
         sort_bubble(opened_list);
+
         // 從opened_list中取出分數最小的
 		Node node;
 		node = opened_list.front();
 		opened_list.pop_front();
 		// cout<<node.step<<" ";
         check_closelist();
-        closed_list.push_back(Node(node.m, node.c, node.b, node.B,node.b_count,node.B_count, node.step, node.parent)); // 將取出的點加入closed_list中
+        closed_list.push_back(Node(node.m, node.c, node.b, node.B,node.b_count,node.B_count, node.step,node.cost, node.parent)); // 將取出的點加入closed_list中
 		// 判斷取出的點是否為目標點
 		if (node.m == 0 && node.c == 0 && node.b == 0)
 			break;
@@ -176,7 +186,7 @@ void a_star_algorithm()
 					//走A船
 					if(i + j < 3)
 					{
-						Node *childA_node = new Node(node.m - i, node.c - j, 0,1,node.b_count+1,node.B_count, node.step + 1, &closed_list.back());
+						Node *childA_node = new Node(node.m - i, node.c - j, 0,1,node.b_count+1,node.B_count, node.step + 1,node.cost+3, &closed_list.back());
 						if (!in_closed_list(childA_node))
 						{
 							if (is_safe(childA_node))
@@ -186,7 +196,7 @@ void a_star_algorithm()
 						}
 					}
 					//走B船
-					Node *childB_node = new Node(node.m - i, node.c - j, 1,0,node.b_count,node.B_count+1, node.step + 1, &closed_list.back());
+					Node *childB_node = new Node(node.m - i, node.c - j, 1,0,node.b_count,node.B_count+1, node.step + 1,node.cost+25, &closed_list.back());
 					if (!in_closed_list(childB_node))
 					{
 						if (is_safe(childB_node))
@@ -205,7 +215,7 @@ void a_star_algorithm()
 					//走A船
 					if(i + j < 3)
 					{
-						Node *childA_node = new Node(node.m - i, node.c - j, 0,0,node.b_count+1,node.B_count, node.step + 1, &closed_list.back());
+						Node *childA_node = new Node(node.m - i, node.c - j, 0,0,node.b_count+1,node.B_count, node.step + 1,node.cost+3, &closed_list.back());
 						if (!in_closed_list(childA_node))
 						{
 							if (is_safe(childA_node))
@@ -215,7 +225,7 @@ void a_star_algorithm()
 						}
 					}
 					//走B船
-					Node *childB_node = new Node(node.m + i, node.c + j, 1,1,node.b_count,node.B_count+1, node.step + 1, &closed_list.back());
+					Node *childB_node = new Node(node.m + i, node.c + j, 1,1,node.b_count,node.B_count+1, node.step + 1,node.cost+25, &closed_list.back());
 					if (!in_closed_list(childB_node))
 					{
 						if (is_safe(childB_node))
@@ -233,7 +243,7 @@ void a_star_algorithm()
 					//走A船
 					if(i + j < 3)
 					{
-						Node *childA_node = new Node(node.m + i, node.c + j, 1,1,node.b_count+1,node.B_count, node.step + 1, &closed_list.back());
+						Node *childA_node = new Node(node.m + i, node.c + j, 1,1,node.b_count+1,node.B_count, node.step + 1,node.cost+3, &closed_list.back());
 						if (!in_closed_list(childA_node))
 						{
 							if (is_safe(childA_node))
@@ -243,7 +253,7 @@ void a_star_algorithm()
 						}
 					}
 					//走B船
-					Node *childB_node = new Node(node.m - i, node.c - j, 0,0,node.b_count,node.B_count+1, node.step + 1, &closed_list.back());
+					Node *childB_node = new Node(node.m - i, node.c - j, 0,0,node.b_count,node.B_count+1, node.step + 1,node.cost+25, &closed_list.back());
 					if (!in_closed_list(childB_node))
 					{
 						if (is_safe(childB_node))
@@ -261,7 +271,7 @@ void a_star_algorithm()
 					//走A船
 					if(i+j<3)
 					{
-						Node *childA_node = new Node(node.m + i, node.c + j, 1,0,node.b_count+1,node.B_count, node.step + 1, &closed_list.back());
+						Node *childA_node = new Node(node.m + i, node.c + j, 1,0,node.b_count+1,node.B_count, node.step + 1,node.cost+3, &closed_list.back());
 						if (!in_closed_list(childA_node))
 						{
 							if (is_safe(childA_node))
@@ -271,7 +281,7 @@ void a_star_algorithm()
 						}
 					}
 					//走B船
-					Node *childB_node = new Node(node.m + i, node.c + j, 0,1,node.b_count,node.B_count+1, node.step + 1, &closed_list.back());
+					Node *childB_node = new Node(node.m + i, node.c + j, 0,1,node.b_count,node.B_count+1, node.step + 1,node.cost+25, &closed_list.back());
 					if (!in_closed_list(childB_node))
 					{
 						if (is_safe(childB_node))
@@ -290,7 +300,7 @@ void output()
 	Node *current = &closed_list.back();
 	while (current != NULL)
 	{
-		cout << "步數:" << current->step << "左岸傳教士:" << current->m << "左岸食人族:" << current->c << "右岸傳教士:" <<m_num - current->m  << "右岸食人族:" << c_num - current->c << "\tA船位:";
+		cout << "步數:" << current->step << "左岸傳教士:" << m_num - current->m << "左岸食人族:" <<c_num - current->c  << "右岸傳教士:" <<current->m  << "右岸食人族:" << current->c << "\tA船位:";
 		if (current->b == 1)
 			cout << "右" ;
 		else
@@ -300,7 +310,7 @@ void output()
 			cout << "右";
 		else
 			cout << "左";
-		cout<<"\tA船次數:"<<current->b_count<<"\tB船次數:"<<current->B_count<<"共花費:"<<3*current->b_count+25*current->B_count<<"元"<<endl;
+		cout<<"\tA船次數:"<<current->b_count<<"\tB船次數:"<<current->B_count<<"共花費:"<<current->cost<<"元"<<endl;
 		current = current->parent;
 	}
 }
@@ -320,8 +330,9 @@ int main(int argc, char const *argv[])
 		cout << "\n1.最短步數\n2.最少花費\n\n請選擇模式: ";
 		cin >> x;
 	}
+    mode = (x==1) ? true : false;	// true:最短步數 false:最少花費
 	closed_list.reserve((m_num + 1) * (c_num + 1) * 2 + 1); //解決記憶體位址跳掉的問題
-	Node start_node(m_num, c_num, 1, 1, 0, 0, 0, nullptr);	//初始化
+	Node start_node(m_num, c_num, 1, 1, 0, 0, 0,0, nullptr);	//初始化
 	opened_list.push_back(start_node);
 
 	a_star_algorithm();

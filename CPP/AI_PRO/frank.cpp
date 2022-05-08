@@ -258,16 +258,16 @@ void output()
 	Node *current = &closed_list.back();
 	while (current != NULL)
 	{
-		cout << "步數:" << current->step << "左岸傳教士:" << current->m << "左岸食人族:" << current->c << "右岸傳教士:" << m_num - current->m << "右岸食人族:" << c_num - current->c << "\tA船位:";
+		cout << "步數:" << current->step << "左岸傳教士:" << m_num - current->m << "左岸食人族:" << c_num - current->c << "右岸傳教士:" <<current->m  << "右岸食人族:" << current->c << "\tA船位:";
 		if (current->b == 1)
-			cout << "左" ;
-		else
 			cout << "右" ;
+		else
+			cout << "左" ;
 		cout<<"\tB船位:";
 		if (current->B == 1)
-			cout << "左";
-		else
 			cout << "右";
+		else
+			cout << "左";
 		cout<<"\tA船次數:"<<current->b_count<<"\tB船次數:"<<current->B_count<<"共花費:"<<3*current->b_count+25*current->B_count<<"元"<<endl;
 		current = current->parent;
 	}

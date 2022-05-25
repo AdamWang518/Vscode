@@ -8,10 +8,7 @@
     <title>你好</title><!--分頁標題-->
     <link rel="icon" href="button.jpg" type="image/x-icon"  >
     <style>
-        div{
-            width: 500px;
-            display: inline-block;
-        }
+        
         /* class */
         .item1 {
             background-color: black;
@@ -22,6 +19,28 @@
         #item1 {
             background-color: purple;
             color:palegoldenrod;
+        }
+        .container{
+            width: 500px;
+            border: 1px solid;
+        }
+        .container>div{
+            border-bottom: 1px solid;
+            padding: 5px;
+            background-color: #f1f1f1;
+            text-align: center;
+        }
+        .container>div:last-child{
+            padding: 5px;
+            background-color: #f1f1f1;
+            text-align: center;
+            border-bottom: 0px;
+        }
+        .container>div:hover{
+            background-color: #555;
+        }
+        .active{
+            background-color: #04aa6d !important;
         }
     </style>
     <link rel="stylesheet" href="main.css">
@@ -34,6 +53,7 @@
     <!-- css priority: 如何明確指定該element-->
     <!-- style > id > class > tag -->
     <!--同級情況，以最左邊為主 -->
+    <!--外面先於裡面-->
     <!--如有必要可加上!important強制提升優先級，但如非必要不該用-->
     <div id="item1">HELLO</div>
     <div class="item1">world</div>
@@ -41,6 +61,17 @@
     color:palegoldenrod;">line</div>
     <input type="date">
     <div class="button">button</div>
-    
+    <ul>
+        <li>
+            <!--項目符號-->
+            <!--可被div取代-->
+        </li>
+    </ul>
+    <div class="container">
+        <div class="active">A</div>
+        <div>B</div>
+        <div>C</div>
+        <div>D</div>
+    </div>
 </body>
 </html>

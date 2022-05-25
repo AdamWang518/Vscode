@@ -1,0 +1,17 @@
+digraph Tree {
+node [shape=box, fontname="helvetica"] ;
+edge [fontname="helvetica"] ;
+0 [label="size <= 9.5\ngini = 0.662\nsamples = 80\nvalue = [25, 31, 24]\nclass = 發財蘑菇"] ;
+1 [label="gini = 0.0\nsamples = 29\nvalue = [0, 29, 0]\nclass = 發財蘑菇"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label="size <= 14.0\ngini = 0.537\nsamples = 51\nvalue = [25, 2, 24]\nclass = 幸運蘑菇"] ;
+0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+3 [label="gini = 0.0\nsamples = 25\nvalue = [25, 0, 0]\nclass = 幸運蘑菇"] ;
+2 -> 3 ;
+4 [label="length <= 15.5\ngini = 0.142\nsamples = 26\nvalue = [0, 2, 24]\nclass = 神秘蘑菇"] ;
+2 -> 4 ;
+5 [label="gini = 0.0\nsamples = 24\nvalue = [0, 0, 24]\nclass = 神秘蘑菇"] ;
+4 -> 5 ;
+6 [label="gini = 0.0\nsamples = 2\nvalue = [0, 2, 0]\nclass = 發財蘑菇"] ;
+4 -> 6 ;
+}

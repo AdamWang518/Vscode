@@ -53,14 +53,14 @@ def Test():
 IndustryType()
 ManageType()
 MedicalType()
-print(data)
+#print(data)
 data = pd.DataFrame.from_dict(data)
 print(data) 
 y = data['type']                   # 變出 y 資料
 X = data.drop(['type'], axis=1)    # 變出 X 資料，將 type 丟棄
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
-model = DecisionTreeClassifier()
-model.fit(X_train, y_train)
+model = DecisionTreeClassifier()#建立決策樹
+model.fit(X_train, y_train)#進行
 Test()
 question = pd.DataFrame.from_dict(question)
 y_predict = model.predict(question)

@@ -44,6 +44,7 @@ def MedicalType():
         data['type'].append('醫學院')
     return 
 def Test():
+    print("請以1到5的數字回答以下問題(1:否 2:好像不是 3:不清楚 4:好像是 5:是)")
     question['是否跟醫療有關'].append(int(input("是否跟醫療有關")))
     question['是否跟資訊有關'].append(int(input('是否跟資訊有關')))
     question['是否跟專案管理有關'].append(int(input('是否跟專案管理有關')))
@@ -55,7 +56,7 @@ ManageType()
 MedicalType()
 #print(data)
 data = pd.DataFrame.from_dict(data)
-print(data) 
+#print(data) 
 y = data['type']                   # 變出 y 資料
 X = data.drop(['type'], axis=1)    # 變出 X 資料，將 type 丟棄
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)

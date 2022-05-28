@@ -25,18 +25,17 @@ for i in range(100):
     mushrooms['length'].append(length) 
 data = pd.DataFrame.from_dict(mushrooms)
 #print(data) 
-# y = data['type']                   # 變出 y 資料
-# X = data.drop(['type'], axis=1)    # 變出 X 資料，將 type 丟棄
+y = data['type']                   # 變出 y 資料
+X = data.drop(['type'], axis=1)    # 變出 X 資料，將 type 丟棄
 
-print(X)
-# print(y)
 
-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
-# model = DecisionTreeClassifier()
-# model.fit(X_train, y_train)
-# model.score(X_test, y_test)
-# y_predict = model.predict(X_test)
-# accuracy_score(y_test, y_predict)
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+model = DecisionTreeClassifier()
+model.fit(X_train, y_train)
+model.score(X_test, y_test)
+y_predict = model.predict(X_test)
+accuracy_score(y_test, y_predict)
 
 
 

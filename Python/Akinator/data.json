@@ -1,0 +1,21 @@
+{
+    "left": {
+        "left": {
+            "left": null,
+            "question": "\u8cc7\u8a0a\u5de5\u7a0b\u5b78\u7cfb",
+            "right": null
+        },
+        "question": "",
+        "right": {
+            "left": null,
+            "question": "\u5de5\u5546\u7ba1\u7406\u5b78\u7cfb",
+            "right": null
+        }
+    },
+    "question": "\u5b83\u6709\u6559\u96fb\u5b50\u5b78\u55ce",
+    "right": {
+        "left": null,
+        "question": "\u96fb\u6a5f\u5de5\u7a0b\u5b78\u7cfb",
+        "right": null
+    }
+}

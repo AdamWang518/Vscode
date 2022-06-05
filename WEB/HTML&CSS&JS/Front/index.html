@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+    <meta charset="UTF-8">
+    <!-- 文件編碼方式 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- 可設定自動重新讀取，只要改成http-equiv="refresh" content="5" 就會在五秒後刷新-->
+    <!--也可設定自動重新導向，只要改成http-equiv="refresh" content="5;http://網址"-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My first page</title>
+    <!-- 文件標題，只能設定一次 -->
+</head>
+<body>
+    <header>
+        <h1>文章頁首</h1>
+        <h2 id="mark">書籤</h2>
+        <!-- header用來標註頁首 -->
+    </header>
+    <!-- HTML不會分辨換行，Enter和空白鍵將被忽略 -->
+    <!-- <hn>是標題輸出，大小從1-6 -->
+    <section>
+        <h2>標題2</h2>
+        <!-- 若要換行可使用<br> -->
+        第一行<br>
+        第二行<br>
+        <!-- 保持原樣式可使用<pre></pre> -->
+        <pre>
+            第一行
+            第二行
+        </pre>
+        <!-- <p></p>可用來標註段落 -->
+        <p>段落</p>
+        <p><b>粗體字</b></p>
+        <p>另一種<strong>粗體字</strong></p>
+        <p><cite>斜體字</cite></p>
+        <p><q>自動加引號</q></p>
+        <p><blockquote>引用長篇文章時做縮排，<mark>加上網底</mark></blockquote></p>
+        <p><cite>引用短文</cite></p>
+        <p><small>用於註解的小字</small></p>
+    </section>
+    <!-- 輸出水平線可用<hr> -->
+    <hr>
+    <section>
+        <p>
+            <kbd>輸入的結果</kbd>
+        </p>
+        <p>
+            <samp>電腦程式產生的結果</samp>
+        </p>
+        <pre>
+            <code>
+                放code
+            </code>
+        </pre>
+        <p><dfn>用語</dfn></p>
+        <p><abbr title="Silicon Stone Education">SSE</abbr></p>
+        <!-- abbr用來放縮寫 -->
+        <p><del>要刪除的元素</del></p>
+        <p><ins>要新增的元素</ins></p>
+        <p>
+            <bdo dir="ltr">left to right</bdo><br>
+            <bdo dir="rtl">right to left</bdo><br>
+            <ruby>明智<rt>Ming Chi</rt></ruby><br>
+            <!-- ruby可用來標註拼音或注音 -->
+            X<sup>2</sup><br>
+            H<sub>2</sub>O<br>
+        </p>
+        <!-- html輸出特殊字元須使用編碼 -->
+        <p>
+            <a href="https://zh.wikipedia.org/wiki/%E8%B6%85%E9%80%A3%E7%B5%90">超連結</a>
+            <a href="index2.html">跳頁</a>
+            <a href="#mark">書籤</a>
+            <a href="Mailto:dodoga518@gmail.com">信箱超連結</a>
+        </p>
+    </section>
+    <!-- section可劃分文章區域 -->
+    
+    <footer>
+        <p>頁尾</p>
+        <!-- footer用來標註頁尾 -->
+    </footer>
+</body>
+</html>

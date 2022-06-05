@@ -33,7 +33,7 @@ def yes (ques) :
 knowledge = Node("資訊工程學系")
 
 def main () :
-    "Guess the animal. Add a new Node for a wrong guess."
+    "Guess the department. Add a new Node for a wrong guess."
     # f = open("Python\Akinator\data.json", "r")
     while True :
         f = open("Python\Akinator\data.json", "r") 
@@ -61,7 +61,6 @@ def main () :
 
         f = open("Python\Akinator\data.json", "w")
         f.write(knowledge.toJSON())
-        #還差寫入
         f.close()  
 
 if __name__ == "__main__" : main ()

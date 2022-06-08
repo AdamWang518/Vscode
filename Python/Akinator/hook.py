@@ -33,10 +33,11 @@ def yes (ques) :
 knowledge = Node("資訊工程學系")
 
 def main () :
+    dataLink="Python\Akinator\data.json"
     "Guess the department. Add a new Node for a wrong guess."
     # f = open("Python\Akinator\data.json", "r")
     while True :
-        f = open("Python\Akinator\data.json", "r") 
+        f = open(dataLink, "r") 
         if f.read()=='':
             knowledge = Node("資訊工程學系")
         else:
@@ -59,7 +60,7 @@ def main () :
         if not yes ("如果是 %s 的話答案會是? " % department) :
             (p.right, p.left) = (p.left, p.right)
 
-        f = open("Python\Akinator\data.json", "w")
+        f = open(dataLink, "w")
         f.write(knowledge.toJSON())
         f.close()  
 

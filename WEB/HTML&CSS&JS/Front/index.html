@@ -71,10 +71,107 @@
             <a href="index2.html">跳頁</a>
             <a href="#mark">書籤</a>
             <a href="Mailto:dodoga518@gmail.com">信箱超連結</a>
+            <a href="file.txt" download>檔案下載</a>
+        </p>
+        <p>
+            <h1>項目符號</h1>
+            <ul>
+                <li>項目1</li>
+                <li>項目2</li>
+            </ul>
+            <h1>有編號的項目</h1>
+            <ul>
+                <ol><li>項目1</li><li>項目2</li></ol>
+                <!-- 有起始項目的編號 -->
+            </ul>
+            <h1>有起始編號的項目</h1>
+            <ul>
+               
+                <!-- 有起始項目的編號 -->
+                <ol start="4"><li>項目1</li><li>項目2</li></ol>
+            </ul>
+            <h1>更改了編號的項目</h1>
+            <ul>
+                <!-- 有起始項目的編號 -->
+                <ol >
+                    <li value="3">項目1</li>
+                    <li value="6">項目2</li>
+                </ol>
+            </ul>
+            <h1>更改了編號種類的項目</h1>
+            <ul>
+                <!-- 有起始項目的編號 -->
+                <!-- 1,a,A,i,I -->
+                <ol type="a">
+                    <li >項目1</li>
+                    <li >項目2</li>
+                </ol>
+            </ul>
+            <h1>遞減的項目</h1>
+            <ul>
+                <ol reversed>
+                    <li>項目1</li>
+                    <li>項目2</li>
+                    </ol>
+                <!-- 有起始項目的編號 -->
+            </ul>
+            <h1>自訂的項目</h1>
+            <dl>
+                <dt>名詞1</dt>
+                <dd>名詞1的說明</dd>
+                <dt>名詞2</dt>
+                <dd>名詞2的說明</dd>
+            </dl>
         </p>
     </section>
+    <hr>
     <!-- section可劃分文章區域 -->
-    
+    <section>
+        <H1>
+            表格
+        </H1>
+        <table border="1">
+            <thead>
+                <tr>
+                    <td colspan="3">
+                        <!-- column合併 -->
+                        表頭
+                    </td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>2</td>
+                    <td>3</td>
+                </tr>
+                <!-- 表頭 -->
+                
+            </thead>
+            <tbody>
+                <tr>
+                    <!-- 定義一個row -->
+                    <td>第一個元素</td>
+                    <td>第二個元素</td>
+                    <td>第三個元素</td>
+                </tr>
+                <tr>
+                    <!-- 定義一個row -->
+                    <td>第一個元素</td>
+                    <td>第二個元素</td>
+                    <td>第三個元素</td>
+                </tr>
+            </tbody>
+            
+            <!-- 表尾 -->
+            <tfoot>
+                <tr>
+                    <td colspan="3">
+                        <!-- 合併儲存格 -->
+                        表尾
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </section>
     <footer>
         <p>頁尾</p>
         <!-- footer用來標註頁尾 -->

@@ -36,32 +36,32 @@ def main () :
     dataLink="Python\Akinator\data.json"
     "Guess the department. Add a new Node for a wrong guess."
     # f = open("Python\Akinator\data.json", "r")
-    while True :
-        f = open(dataLink, "r") 
-        if f.read()=='':
-            knowledge = Node("資訊工程學系")
-        else:
-            knowledge = json.load(open('Python\Akinator\data.json','r'), object_hook=Node.parseJSON) 
-        print("")      # line break, either Python 2 or 3
-        if not yes("你有想猜的科系嗎 ") : break
-        p = knowledge
-        while p.left != None :
-            if yes(p.question+"? ") : p = p.right
-            else                    : p = p.left
-    
-        if yes("它是 " + p.question + "? ") : continue
-        department   = raw_input ("這個科系的名字是?")
-        question = raw_input ("什麼樣的問題可以區分 %s 跟 %s? "
-                                  % (department,p.question))
-        p.left    = Node(p.question)
-        p.right   = Node(department)
-        p.question = question
-    
-        if not yes ("如果是 %s 的話答案會是? " % department) :
-            (p.right, p.left) = (p.left, p.right)
+    #while True :
+    f = open(dataLink, "r") 
+    if f.read()=='':
+        knowledge = Node("資訊工程學系")
+    else:
+        knowledge = json.load(open(dataLink,'r'), object_hook=Node.parseJSON) 
+    print("")      # line break, either Python 2 or 3
+    #if not yes("你有想猜的科系嗎 ") : break
+    p = knowledge
+    while p.left != None :
+        if yes(p.question+"? ") : p = p.right
+        else                    : p = p.left
 
-        f = open(dataLink, "w")
-        f.write(knowledge.toJSON())
-        f.close()  
+    if yes("它是 " + p.question + "? ") : return
+    department   = raw_input ("這個科系的名字是?")
+    question = raw_input ("什麼樣的問題可以區分 %s 跟 %s? "
+                                % (department,p.question))
+    p.left    = Node(p.question)
+    p.right   = Node(department)
+    p.question = question
+
+    if not yes ("如果是 %s 的話答案會是? " % department) :
+        (p.right, p.left) = (p.left, p.right)
+
+    f = open(dataLink, "w")
+    f.write(knowledge.toJSON())
+    f.close()  
 
 if __name__ == "__main__" : main ()

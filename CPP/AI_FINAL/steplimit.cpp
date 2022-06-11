@@ -14,6 +14,7 @@ using namespace std;
 #define CLOSED_LIST_PATH "closed_list.txt"
 
 int m_num, c_num;	// 全部的傳教士、食人魔數量
+int limit;//費用上限
 bool mode;			// true:最短步數 false:最少花費
 
 struct Node{
@@ -42,14 +43,15 @@ bool is_safe(Node* n){	// 判斷兩岸的傳教士是否安全
 	int c_left = n->c;
 	int m_right =  m_num - m_left;
 	int c_right = c_num - c_left;
+	int step = n->step;
 
-	if(m_left<c_left && m_left!=0)		// 左岸食人魔數量不可超過傳教士數量，除非傳教士數量為0
+	if(m_left<c_left && m_left!=0||step>limit)		// 左岸食人魔數量不可超過傳教士數量，除非傳教士數量為0
 		return false;
-	if(m_right<c_right && m_right!=0)	// 右岸食人魔數量不可超過傳教士數量，除非傳教士數量為0
+	if(m_right<c_right && m_right!=0||step>limit)	// 右岸食人魔數量不可超過傳教士數量，除非傳教士數量為0
 		return false;
-	if(m_left<0 || c_left<0 || m_right<0 || c_right<0)
+	if(m_left<0 || c_left<0 || m_right<0 || c_right<0||step>limit)//limit為時間之上限，step不可超過limit
 		return false;
-	if(m_left>=c_left || m_right>=c_right)
+	if((m_left>=c_left || m_right>=c_right)&&step<=limit)
 		return true;
 }
 
@@ -231,6 +233,9 @@ int main(int argc, char const *argv[]){
 	cin >> m_num;
 	cout << "請輸入初始野人人數：";
 	cin >> c_num;
+	cout << "請輸入時間上限:" << endl;
+	
+	cin >> limit;
 
 	closed_list.reserve((m_num+1) * (c_num+1) * 2 * 2 + 1);
 	Node start_node(m_num, c_num, 1, 1, 0, 0, nullptr);

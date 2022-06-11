@@ -1,13 +1,21 @@
 {
+    "question": "它有教電子學嗎",
     "left": {
+        "question": "資訊工程學系",
         "left": null,
-        "question": "\u8cc7\u8a0a\u5de5\u7a0b\u5b78\u7cfb",
         "right": null
     },
-    "question": "\u5b83\u6709\u6559\u96fb\u5b50\u5b78\u55ce",
     "right": {
-        "left": null,
-        "question": "\u96fb\u6a5f\u5de5\u7a0b\u5b78\u7cfb",
-        "right": null
+        "question": "它有教電子工程學導論嗎",
+        "left": {
+            "question": "電機工程學系",
+            "left": null,
+            "right": null
+        },
+        "right": {
+            "question": "電子工程學系",
+            "left": null,
+            "right": null
+        }
     }
 }

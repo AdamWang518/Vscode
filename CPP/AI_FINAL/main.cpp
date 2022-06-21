@@ -28,8 +28,8 @@ struct Node{
 	Node(int m_num, int c_num, int a_state, int b_state, int step_count, int cost_num, Node* ptr): 
 	m{m_num}, c{c_num}, a{a_state}, b{b_state}, step{step_count}, cost{cost_num}, parent{ptr} {
 		int score = mode ? step : cost;
-		//f_loss = score + ((m + c) / 2.0) * (mode ? 1:30);
-		f_loss = score; 
+		f_loss = score + ((m + c) / 2.0) * (mode ? 1:30);
+		// f_loss = score; 
 	}
 	Node():m{0}, c{0}, a{0}, b{0}, cost{0}, step{0}, f_loss{0}, parent{nullptr} {};
 };

@@ -1,9 +1,9 @@
 import requests
 from bs4 import BeautifulSoup
 import time
-path = 'D:\\VScode\\Python\\ESJ-download\\惡役大小姐淪為庶民.txt'
+path = 'D:\\VScode\\Python\\ESJ-download\\贞操逆转世界的童贞边境领主骑士.txt'
 f = open(path, 'w',encoding='utf8')
-html=requests.get('https://www.esjzone.cc/detail/1579237880.html')
+html=requests.get('https://www.esjzone.cc/detail/1652100515.html')
 soup=BeautifulSoup(html.text,'html.parser')
 Links=soup.select('#chapterList > a')
 pageList=[]

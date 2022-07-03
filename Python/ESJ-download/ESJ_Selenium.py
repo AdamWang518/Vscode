@@ -8,7 +8,7 @@ driver.find_element_by_xpath('/html/body/div[3]/section/div/div[1]/form/div[1]/i
 driver.find_element_by_xpath('/html/body/div[3]/section/div/div[1]/form/div[2]/input').send_keys('20010518')
 driver.find_element_by_xpath('/html/body/div[3]/section/div/div[1]/form/div[4]/a').click()
 time.sleep(5)
-driver.get("https://www.esjzone.cc/detail/1592280550.html")#要爬的小說連結
+driver.get("https://www.esjzone.cc/detail/1593573754.html")#要爬的小說連結
 soup = BeautifulSoup(driver.page_source, 'html.parser')
 name=soup.select('body > div.offcanvas-wrapper > section > div > div.col-xl-9.col-lg-8.p-r-30 > div:nth-child(1) > div.col-md-9.book-detail > h2')[0].string
 path = 'D:\\VScode\\Python\\ESJ-download\\'+name+'.txt'#要爬的小說名稱
@@ -21,6 +21,7 @@ for page in pageList:
     driver.get(page)
     soup=BeautifulSoup(driver.page_source,'html.parser')
     #time.sleep(1)
+    time.sleep(1)
     title=soup.select('body > div.offcanvas-wrapper > section > div > div.col-xl-9.col-lg-8.p-r-30 > h2')[0].string
     words=soup.select('body > div.offcanvas-wrapper > section > div > div.col-xl-9.col-lg-8.p-r-30 > div.forum-content.mt-3 > p')
     f.write(title+'\n')

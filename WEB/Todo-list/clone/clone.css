@@ -1,0 +1,24 @@
+.clone{
+    background-color: white;
+    color: rgb(6,95,212);
+    border-color: rgb(6,95,212);
+    border-width: 1px;
+    border-radius: 1px;
+    text-align: center;
+    cursor: pointer;
+    border-style: solid;
+    transition: background-color 1s,color 1s;
+    vertical-align: top;
+    padding-top: 9px;
+    padding-bottom: 9px;
+    padding-left: 16px;
+    padding-right: 16px;
+}
+.clone:hover{
+    background-color: rgb(6,95,212);
+    
+    color: white;
+}
+.clone:active{
+    opacity: 0.7;
+}

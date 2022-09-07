@@ -13,6 +13,7 @@
     padding-bottom: 9px;
     padding-left: 16px;
     padding-right: 16px;
+    margin-bottom: 10px;
 }
 .counter:hover{
     background-color: rgb(6,95,212);

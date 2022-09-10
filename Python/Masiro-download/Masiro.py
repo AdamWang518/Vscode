@@ -13,7 +13,7 @@ driver.find_element(By.XPATH,'//*[@id="password"]').send_keys('20010518')
 driver.find_element(By.XPATH,'//*[@id="login-btn"]').click()
 sleep(5)
 #driver.find_element_by_xpath('/html/body/div/header/nav/a').click()
-driver.get("https://masiro.me/admin/novelView?novel_id=779")#輸入需要的小說連結
+driver.get("https://masiro.me/admin/novelView?novel_id=243")#輸入需要的小說連結
 soup = BeautifulSoup(driver.page_source, 'html.parser')
 try:
     name=soup.select('#app > section.content > div:nth-child(1) > div > div > div.box-body.z-i > div.novel-title')[0].string
@@ -29,10 +29,15 @@ try:
         #time.sleep(1)
         time.sleep(1)
         title=soup.select('#app > section.content > div:nth-child(1) > div > div > div.box-header.with-border.nov-title-box > span.novel-title > div')[0].string
-        words=soup.select('#app > section.content > div:nth-child(1) > div > div > div.box-body.nvl-content > p')
-        f.write(title+'\n')
+        words=soup.select('#app > section.content > div:nth-child(1) > div > div > div.box-body.nvl-content >p')
+        # brs=soup.select('#app > section.content > div:nth-child(1) > div > div > div.box-body.nvl-content>br')
+        #app > section.content > div:nth-child(1) > div > div > div.box-body.nvl-content > br:nth-child(63)
+        # f.write(title+'\n')
         for word in words:
             f.write(word.text+'\n')
+
+        # for br in brs:
+        #     f.write(br.text+'\n')
     f.close()
 except:
     print('有問題')

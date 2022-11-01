@@ -32,7 +32,7 @@ try:
         words=soup.select('#app > section.content > div:nth-child(1) > div > div > div.box-body.nvl-content >p')
         # brs=soup.select('#app > section.content > div:nth-child(1) > div > div > div.box-body.nvl-content>br')
         #app > section.content > div:nth-child(1) > div > div > div.box-body.nvl-content > br:nth-child(63)
-        # f.write(title+'\n')
+        f.write(title+'\n')
         for word in words:
             f.write(word.text+'\n')
 

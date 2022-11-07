@@ -5,8 +5,7 @@ from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-import undetected_chromedriver as uc
-from selenium_stealth import stealth
+
 from selenium.webdriver.chrome.options import Options
 import time
 

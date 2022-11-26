@@ -17,7 +17,7 @@ driver.find_element(By.XPATH,'/html/body/div[3]/section/div/div[1]/form/div[1]/i
 driver.find_element(By.XPATH,'/html/body/div[3]/section/div/div[1]/form/div[2]/input').send_keys('20010518')
 driver.find_element(By.XPATH,'/html/body/div[3]/section/div/div[1]/form/div[4]/a').click()
 time.sleep(5)
-driver.get("https://www.esjzone.cc/detail/1657678168.html")#要爬的小說連結
+driver.get("https://www.esjzone.cc/detail/1558018541.html")#要爬的小說連結
 # driver.find_element(By.XPATH,'//*[@id="chapterList"]/details[1]/summary/strong').click()
 # driver.find_element(By.XPATH,'//*[@id="chapterList"]/details[2]/summary/strong').click()
 
@@ -42,8 +42,8 @@ for link in Links:
 
 for page in pageList:
     driver.get(page)
-    time.sleep(1)
-    # soup=BeautifulSoup(driver.page_source,'html.parser')
+    # time.sleep(1)
+    soup=BeautifulSoup(driver.page_source,'html.parser')
     try:
         driver.find_element(By.XPATH,'//*[@id="ticrf"]/div/div/div[3]/a[2]').click()
     except:

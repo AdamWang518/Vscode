@@ -22,7 +22,7 @@ driver.find_element(By.XPATH,'//*[@id="password"]').send_keys('20010518')
 driver.find_element(By.XPATH,'//*[@id="login-btn"]').click()
 time.sleep(5)
 
-driver.get("https://masiro.me/admin/novelView?novel_id=902")#要爬的小說連結
+driver.get("https://masiro.me/admin/novelView?novel_id=51")#要爬的小說連結
 
 
 name=driver.find_element(By.CSS_SELECTOR,'#app > section.content > div:nth-child(1) > div > div > div.box-body.z-i > div.novel-title').text

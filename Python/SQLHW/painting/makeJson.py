@@ -32,5 +32,5 @@ for page in pageList:
     except:
         print(page)
         # 若有特定頁面有問題則將其吐出
-    json.dump(infoDict, f, ensure_ascii=False)
+json.dump(infoDict, f, ensure_ascii=False)
 f.close()

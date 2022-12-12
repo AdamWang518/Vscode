@@ -8,6 +8,7 @@ db = firebase_admin.firestore.client()
 f = open('D:\\Vscode\\Python\\Filter_firebase\\attraction.json', 'r',encoding='utf8')
 inFo=json.loads(f.read())
 Attractions=inFo["Info"]
+#讀取json檔的全部名畫並上傳至firebase
 for Attraction in Attractions:
     item=dict()
     item["Name"]=Attraction["Name"]

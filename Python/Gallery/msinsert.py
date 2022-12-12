@@ -10,12 +10,13 @@ server = 'localhost\MSSQLSERVER01'
 database = 'Gallery'
 username = 'dodoga518'
 password = '20010518'
-# 建立資料庫連接
+# 建立MSSQL資料庫連接
 conn = pyodbc.connect('DRIVER={ODBC Driver 18 for SQL Server};SERVER='+server+';DATABASE='+database+';'+'TrustServerCertificate=yes;'+'UID='+username+';PWD='+ password)
 cursor = conn.cursor() 
 inFo=json.loads(f.read())
 draws=inFo["inFo"]
 for draw in draws:
+    #塞入資料庫
     cursor.execute("INSERT gallery_table (imageLink, drawName, artist, attribute, startYear,endYear) VALUES ('{}','{}','{}','{}','{}','{}')".format(draw["imageLink"],draw["drawName"],draw["artist"],draw["Attribute"],draw["startYear"],draw["endYear"]))
     conn.commit()
 conn.close()

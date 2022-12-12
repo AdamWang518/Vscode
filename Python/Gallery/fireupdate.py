@@ -8,6 +8,7 @@ db = firestore.client()
 f = open('D:\\Vscode\\Python\\Gallery\\trimmed.json', 'r',encoding='utf8')
 inFo=json.loads(f.read())
 draws=inFo["inFo"]
+#讀取json檔的全部名畫並上傳至firebase
 for draw in draws:
     item=dict()
     item["imageLink"]=draw["imageLink"]

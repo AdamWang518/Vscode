@@ -20,8 +20,12 @@ driver.find_element(By.XPATH,'//*[@id="username"]').send_keys('dodoga518@gmail.c
 driver.find_element(By.XPATH,'//*[@id="password"]').send_keys('20010518')
 driver.find_element(By.XPATH,'//*[@id="login-btn"]').click()
 
-
-driver.get("https://masiro.me/admin/novelView?novel_id=192")#要爬的小說連結
+time.sleep(5)
+driver.get("https://masiro.me/admin/novelView?novel_id=28")#要爬的小說連結
+try:
+     driver.find_element(By.XPATH,'//*[@id="app"]/section[2]/div[1]/button').click()
+except:
+     print("no button")
 
 
 name=driver.find_element(By.CSS_SELECTOR,'#app > section.content > div:nth-child(1) > div > div > div.box-body.z-i > div.novel-title').text
@@ -56,7 +60,7 @@ for page in pageList:
         words=driver.find_elements(By.CSS_SELECTOR,'#app > section.content > div:nth-child(1) > div > div > div.box-body.nvl-content')
     f.write(title+'\n')
     for word in words:
-        f.write(word.text)
+            f.write(word.get_attribute('innerText'))
     f.write('\n')
 f.close()
 print('結束')

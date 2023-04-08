@@ -14,14 +14,14 @@ driver.find_element(By.XPATH,'/html/body/div[3]/section/div/div[1]/form/div[1]/i
 driver.find_element(By.XPATH,'/html/body/div[3]/section/div/div[1]/form/div[2]/input').send_keys('20010518')
 driver.find_element(By.XPATH,'/html/body/div[3]/section/div/div[1]/form/div[4]/a').click()
 time.sleep(5)
-driver.get("https://www.esjzone.cc/detail/1627833502.html")#要爬的小說連結
+driver.get("https://www.esjzone.cc/detail/1672548478.html")#要爬的小說連結
 # driver.find_element(By.XPATH,'//*[@id="chapterList"]/details[1]/summary/strong').click()
 # driver.find_element(By.XPATH,'//*[@id="chapterList"]/details[2]/summary/strong').click()
 soup = BeautifulSoup(driver.page_source, 'html.parser')
 
 name=soup.select('body > div.offcanvas-wrapper > section > div > div.col-xl-9.col-lg-8.p-r-30 > div:nth-child(1) > div.col-md-9.book-detail > h2')[0].string
 # path = 'D:\\MEGA\\ESJ爬蟲\\'+'『男女比1比30』世界的黑一點偶像'+'.txt'#要爬的小說名稱
-path = 'D:\\MEGA\\ESJ爬蟲\\'+name+'.txt'
+path = 'D:\\MEGA\\小說\\ESJ爬蟲\\'+name+'.txt'
 f = open(path, 'w',encoding='utf8')
 # Details=soup.select('#chapterList > details > a')
 Links=soup.select('#chapterList > a')
@@ -34,6 +34,10 @@ for link in Links:
 for page in pageList:
     driver.get(page)
     soup=BeautifulSoup(driver.page_source,'html.parser')
+    try:
+        driver.find_element(By.XPATH,'//*[@id="ticrf"]/div/div/div[3]/a[2]').click()
+    except:
+        print("沒得按")
     #time.sleep(1)
     time.sleep(1)
     title=soup.select('body > div.offcanvas-wrapper > section > div > div.col-xl-9.col-lg-8.p-r-30 > h2')[0].string

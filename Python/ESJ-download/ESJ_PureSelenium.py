@@ -17,12 +17,13 @@ driver.find_element(By.XPATH,'/html/body/div[3]/section/div/div[1]/form/div[1]/i
 driver.find_element(By.XPATH,'/html/body/div[3]/section/div/div[1]/form/div[2]/input').send_keys('20010518')
 driver.find_element(By.XPATH,'/html/body/div[3]/section/div/div[1]/form/div[4]/a').click()
 time.sleep(5)
-driver.get("https://www.esjzone.cc/detail/1672548478.html")#要爬的小說連結
+driver.get("https://www.esjzone.cc/detail/1639755657.html")#要爬的小說連結
 # driver.find_element(By.XPATH,'//*[@id="chapterList"]/details[1]/summary/strong').click()
 # driver.find_element(By.XPATH,'//*[@id="chapterList"]/details[2]/summary/strong').click()
 
 name=driver.find_element(By.CSS_SELECTOR,'body > div.offcanvas-wrapper > section > div > div.col-xl-9.col-lg-8.p-r-30 > div:nth-child(1) > div.col-md-9.book-detail > h2').text
 # path = 'D:\\MEGA\\小說\\ESJ爬蟲\\'+'『男女比1比30』世界的黑一點偶像'+'.txt'#要爬的小說名稱
+# path = 'D:\\MEGA\\小說\\ESJ爬蟲\\'+'榨精是義務'+'.txt'#要爬的小說名稱
 path = 'D:\\MEGA\\小說\\ESJ爬蟲\\'+name+'.txt'
 f = open(path, 'w',encoding='utf8')
 Details=[]
@@ -50,11 +51,16 @@ for page in pageList:
         print("沒得按")
     try:
         title=driver.find_element(By.CSS_SELECTOR,'body > div.offcanvas-wrapper > section > div > div.col-xl-9.col-lg-8.p-r-30 > h2').text
-        words=driver.find_elements(By.CSS_SELECTOR,'body > div.offcanvas-wrapper > section > div > div.col-xl-9.col-lg-8.p-r-30 > div.forum-content.mt-3>p')
+        words=driver.find_elements(By.CSS_SELECTOR,'body > div.offcanvas-wrapper > section > div > div.col-xl-9.col-lg-8.p-r-30 > div.forum-content.mt-3')
+        # for word in words:
+        #     print(word.get_attribute('innerText'))
+        # time.sleep(1000)
         # words=soup.select('body > div.offcanvas-wrapper > section > div > div.col-xl-9.col-lg-8.p-r-30 > div.forum-content.mt-3 > p')
         f.write(title+'\n')
+        # for word in words:
+        #     f.write(word.text+'\n')
         for word in words:
-            f.write(word.text+'\n')
+            f.write(word.get_attribute('innerText'))
         f.write('\n')
     except:
         print('非正規格式')

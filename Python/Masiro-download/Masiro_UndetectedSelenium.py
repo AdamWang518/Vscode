@@ -22,7 +22,7 @@ driver.find_element(By.XPATH,'//*[@id="password"]').send_keys('20010518')
 driver.find_element(By.XPATH,'//*[@id="login-btn"]').click()
 time.sleep(5)
 
-driver.get("https://masiro.me/admin/novelView?novel_id=360")#要爬的小說連結
+driver.get("https://masiro.me/admin/novelView?novel_id=621")#要爬的小說連結
 
 
 
@@ -61,7 +61,7 @@ for page in pageList:
         words=driver.find_elements(By.CSS_SELECTOR,'#app > section.content > div:nth-child(1) > div > div > div.box-body.nvl-content')
     f.write(title+'\n')
     for word in words:
-        f.write(word.text)
+            f.write(word.get_attribute('innerText'))
     f.write('\n')
 f.close()
 driver.quit()

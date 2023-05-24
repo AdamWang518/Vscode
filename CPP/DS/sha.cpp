@@ -12,6 +12,7 @@ const int HashSize = 64;   // HashValue 64Bytes
 const uint64_t sha512_initial_hash[8] = {
     0x6A09E667F3BCC908, 0xBB67AE8584CAA73B, 0x3C6EF372FE94F82B, 0xA54FF53A5F1D36F1,
     0x510E527FADE682D1, 0x9B05688C2B3E6C1F, 0x1F83D9ABFB41BD6B, 0x5BE0CD19137E2179};
+// 初始hash value
 uint8_t *PadInput(const uint8_t *inputBytes, size_t inputLength, size_t &paddedLength)
 {
     size_t originalLength = inputLength;
@@ -27,14 +28,19 @@ uint8_t *PadInput(const uint8_t *inputBytes, size_t inputLength, size_t &paddedL
     {
         paddedData[i] = 0x00;
     }
+
     uint64_t bitLength = originalLength * 8; // 算出原始長度有幾bit，存在最後16Byte中
+    // 因為 inputLength（即原始消息的長度）被定義為 size_t 類型
+    // 在這種情況下，原始消息的長度不可能超過64位可以表示的最大值
+    // 所以長度只需填充最後的64bit，128~65可以保持為0
     for (int i = 7; i >= 0; i--)
     {
         paddedData[paddedLength - 8 + i] = (bitLength >> ((7 - i) * 8)) & 0xFF;
-        //依照big endian，最高位元放在最左側
-        // 每個迴圈都向右移一個byte
-        // 並使用位元運算符 & 配合遮罩 0xFF，將 bitLength 的位元內容截斷為 8 位元
-        // 並將結果存儲在 paddedData 的對應位元組中。
+        // 依照big endian，最高位元放在最左側
+        //  每個迴圈都向右移一個byte
+        //  並使用位元運算符 & 配合遮罩 0xFF，將 bitLength 的位元內容截斷為 8 位元
+        //  並將結果存儲在 paddedData 的對應位元組中。
+        // 直到最後
     }
 
     return paddedData;

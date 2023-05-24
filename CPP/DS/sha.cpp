@@ -32,7 +32,7 @@ uint8_t *PadInput(const uint8_t *inputBytes, size_t inputLength, size_t &paddedL
     uint64_t bitLength = originalLength * 8; // 算出原始長度有幾bit，存在最後16Byte中
     // 因為 inputLength（即原始消息的長度）被定義為 size_t 類型
     // 在這種情況下，原始消息的長度不可能超過64位可以表示的最大值
-    // 所以長度只需填充最後的64bit，128~65可以保持為0
+    // 所以長度只需填充最後的64bit，最後128~65可以保持為0
     for (int i = 7; i >= 0; i--)
     {
         paddedData[paddedLength - 8 + i] = (bitLength >> ((7 - i) * 8)) & 0xFF;

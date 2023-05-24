@@ -1,0 +1,2 @@
+https://masiro.me/admin/novelView?novel_id=20
+https://masiro.me/admin/novelView?novel_id=605

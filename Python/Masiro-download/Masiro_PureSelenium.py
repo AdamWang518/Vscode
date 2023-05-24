@@ -21,7 +21,8 @@ driver.find_element(By.XPATH,'//*[@id="password"]').send_keys('20010518')
 driver.find_element(By.XPATH,'//*[@id="login-btn"]').click()
 
 time.sleep(5)
-driver.get("https://masiro.me/admin/novelView?novel_id=28")#要爬的小說連結
+
+driver.get("https://masiro.me/admin/novelView?novel_id=471")#要爬的小說連結
 try:
      driver.find_element(By.XPATH,'//*[@id="app"]/section[2]/div[1]/button').click()
 except:
@@ -30,7 +31,9 @@ except:
 
 name=driver.find_element(By.CSS_SELECTOR,'#app > section.content > div:nth-child(1) > div > div > div.box-body.z-i > div.novel-title').text
 # path = 'D:\\MEGA\\小說\\真白萌爬蟲\\'+'『男女比1比30』世界的黑一點偶像'+'.txt'#要爬的小說名稱
-path = 'D:\\MEGA\\小說\\真白萌爬蟲\\'+name+'.txt'
+# path = 'D:\\MEGA\\小說\\真白萌爬蟲\\'+name+'.txt'
+path = 'D:\\MEGA\\小說\\真白萌爬蟲\\'+'與青梅竹馬拯救異世界___咦_是原世界'+'.txt'
+
 f = open(path, 'w',encoding='utf8')
 # Details=soup.select('#chapterList > details > a')
 Links=driver.find_elements(By.CSS_SELECTOR,'#app > section.content > div > div > div > div.box-body > div.chapter-content > ul > li > ul > a')
@@ -41,9 +44,9 @@ for link in Links:
     pageList.append(link.get_attribute('href'))
     # print(link.get_attribute('href'))
 # del pageList[0:43]
+
 for page in pageList:
     driver.get(page)
-    time.sleep(1)
     try:
         #app > section.content > div:nth-child(1) > div > div > div.box-header.with-border.nov-title-box > span.novel-title > div
         title=driver.find_element(By.CSS_SELECTOR,'#app > section.content > div:nth-child(1) > div > div > div.box-header.with-border.nov-title-box > span.novel-title > div').text

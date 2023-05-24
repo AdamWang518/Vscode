@@ -28,9 +28,13 @@ uint8_t *PadInput(const uint8_t *inputBytes, size_t inputLength, size_t &paddedL
         paddedData[i] = 0x00;
     }
     uint64_t bitLength = originalLength * 8; // 算出原始長度有幾bit，存在最後16Byte中
-    for (int i = 0; i < 8; i++)
+    for (int i = 7; i >= 0; i--)
     {
         paddedData[paddedLength - 8 + i] = (bitLength >> ((7 - i) * 8)) & 0xFF;
+        //依照big endian，最高位元放在最左側
+        // 每個迴圈都向右移一個byte
+        // 並使用位元運算符 & 配合遮罩 0xFF，將 bitLength 的位元內容截斷為 8 位元
+        // 並將結果存儲在 paddedData 的對應位元組中。
     }
 
     return paddedData;

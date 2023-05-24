@@ -15,15 +15,19 @@ const uint64_t sha512_initial_hash[8] = {
 uint8_t *PadInput(const uint8_t *inputBytes, size_t inputLength, size_t &paddedLength)
 {
     size_t originalLength = inputLength;
-    size_t paddingLength = (BlockSize - ((originalLength + 16) % BlockSize));//預留至少16Bytes做填充用
+    size_t paddingLength = (BlockSize - ((originalLength + 16) % BlockSize)); // 預留至少16Bytes做填充用，好寫入1000 0000作為開始標誌
 
-    paddedLength = originalLength + paddingLength + 16;//保留最後用來裝原始訊息長度的16bytes
+    paddedLength = originalLength + paddingLength + 16; // 保留最後用來裝原始訊息長度的16bytes
     uint8_t *paddedData = new uint8_t[paddedLength];
 
-    memcpy(paddedData, inputBytes, originalLength);
-    paddedData[originalLength] = 0x80;//填充1然後後面放0，1000 0000
-
-    uint64_t bitLength = originalLength * 8;//算出原始長度有幾bit，存在最後16Byte中
+    memcpy(paddedData, inputBytes, originalLength); // 保留原始資訊
+    paddedData[originalLength] = 0x80;              // 最後面填充1然後後面放0，1000 0000
+    // 填充0x00直到最後的16個位元組之前
+    for (size_t i = originalLength + 1; i < paddedLength - 16; i++)
+    {
+        paddedData[i] = 0x00;
+    }
+    uint64_t bitLength = originalLength * 8; // 算出原始長度有幾bit，存在最後16Byte中
     for (int i = 0; i < 8; i++)
     {
         paddedData[paddedLength - 8 + i] = (bitLength >> ((7 - i) * 8)) & 0xFF;
@@ -41,11 +45,11 @@ int main(int argc, char *argv[])
     {
         stringstream buffer;
         buffer << file.rdbuf();
-        string content = buffer.str();//read file
+        string content = buffer.str(); // read file
         uint8_t contentBytes[content.length()];
         memcpy(contentBytes, content.data(), content.length());
-        size_t paddedLength = 0;//inintial paddedLength
-        uint8_t *paddedInput = PadInput(contentBytes, content.length(), paddedLength);//以128Byte為單位去切割並填充
+        size_t paddedLength = 0;                                                       // inintial paddedLength
+        uint8_t *paddedInput = PadInput(contentBytes, content.length(), paddedLength); // 以128Byte為單位去切割並填充
         delete[] paddedInput;
 
         file.close();

@@ -136,9 +136,9 @@ void shaCompress(uint64_t *hash, const uint8_t block[BlockSize], bool output)
 }
 int main(int argc, char *argv[])
 {
-    string path = "D:\\Vscode\\CPP\\DS\\sha.txt";
+    // string path = "D:\\Vscode\\CPP\\DS\\sha.txt";
     bool output = false;
-    // string path = argv[1];
+    string path = argv[1];
     // bool output;
     // if (strcmp(argv[2], "true") == 0 || strcmp(argv[2], "True") == 0 || strcmp(argv[2], "1") == 0)
     // {
@@ -196,6 +196,7 @@ int main(int argc, char *argv[])
         // 輸出以(bytes/second)為單位的效能
         delete[] paddedInput;
         stringstream final_hash;
+        cout << "The Sha-512 result is:" << endl;
         for (int i = 0; i < 8; i++)
         {
             final_hash << setfill('0') << setw(16) << hex << hash[i];

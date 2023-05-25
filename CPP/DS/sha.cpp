@@ -188,7 +188,7 @@ int main(int argc, char *argv[])
         // 紀錄整個計算所花費的時間
         if (duration > 0)
         {
-            cout << "Performance: " << (paddedLength / duration) << " bytes/second" << endl;
+            cout << "Performance: " << fixed << setprecision(5) << (paddedLength / duration) << " bytes/second" << endl;
         }
         else
         {

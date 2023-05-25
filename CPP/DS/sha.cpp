@@ -202,6 +202,7 @@ int main(int argc, char *argv[])
         {
             final_hash << setfill('0') << setw(16) << hex << hash[i];
         }
+        // 輸出加密完成的結果
         cout << final_hash.str() << endl;
         file.close();
     }

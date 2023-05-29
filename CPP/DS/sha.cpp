@@ -216,3 +216,4 @@ int main(int argc, char *argv[])
 // https://en.wikipedia.org/wiki/SHA-2
 // https://medium.com/@zaid960928/cryptography-explaining-sha-512-ad896365a0c1
 // https://chat.openai.com/
+// https://www.youtube.com/watch?v=orIgy2MjqrA&t=102s

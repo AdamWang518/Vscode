@@ -1,1 +1,0 @@
-torchserve --start --ncs --model-store model_store --models densenet161.mar

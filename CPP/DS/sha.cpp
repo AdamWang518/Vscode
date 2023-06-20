@@ -10,6 +10,7 @@
 #include <sstream>
 #include <string>
 using namespace std;
+const string outputPath = "output.txt";
 const int BlockSize = 128; // Block Size 128Bytes
 // const int HashSize = 64;   // HashValue 64Bytes
 const uint64_t sha512_initial_hash[8] = {
@@ -84,6 +85,9 @@ inline uint64_t Sigma1(uint64_t x) { return rightrotate(x, 14) ^ rightrotate(x, 
 // Σ1(x) = ROTR^14(x) XOR ROTR^18(x) XOR ROTR^41(x)
 void shaCompress(uint64_t *hash, const uint8_t block[BlockSize], bool output)
 {
+    // 設定輸入檔案，以續寫輸入
+    ofstream file;
+    file.open(outputPath, ios::app);
     uint64_t W[80];
     // 每個word需要為64bit長，因此用uint64_t，每位有8byte
     for (int i = 0; i < 16; i++)
@@ -124,6 +128,28 @@ void shaCompress(uint64_t *hash, const uint8_t block[BlockSize], bool output)
         c = b;
         b = a;
         a = T1 + T2;
+        if (output == true)
+        {
+            cout << "\tround:" << dec << t + 1 << endl;
+            cout << "\t\ta:" << setfill('0') << setw(16) << hex << a << endl;
+            cout << "\t\tb:" << setfill('0') << setw(16) << hex << b << endl;
+            cout << "\t\tc:" << setfill('0') << setw(16) << hex << b << endl;
+            cout << "\t\td:" << setfill('0') << setw(16) << hex << d << endl;
+            cout << "\t\te:" << setfill('0') << setw(16) << hex << e << endl;
+            cout << "\t\tf:" << setfill('0') << setw(16) << hex << f << endl;
+            cout << "\t\tg:" << setfill('0') << setw(16) << hex << g << endl;
+            cout << "\t\th:" << setfill('0') << setw(16) << hex << h << endl;
+
+            file << "\tround:" << dec << t + 1 << endl;
+            file << "\t\ta:" << setfill('0') << setw(16) << hex << a << endl;
+            file << "\t\tb:" << setfill('0') << setw(16) << hex << b << endl;
+            file << "\t\tc:" << setfill('0') << setw(16) << hex << b << endl;
+            file << "\t\td:" << setfill('0') << setw(16) << hex << d << endl;
+            file << "\t\te:" << setfill('0') << setw(16) << hex << e << endl;
+            file << "\t\tf:" << setfill('0') << setw(16) << hex << f << endl;
+            file << "\t\tg:" << setfill('0') << setw(16) << hex << g << endl;
+            file << "\t\th:" << setfill('0') << setw(16) << hex << h << endl;
+        }
     }
     // round完成，做addtion，更新hash
     hash[0] += a;
@@ -134,28 +160,29 @@ void shaCompress(uint64_t *hash, const uint8_t block[BlockSize], bool output)
     hash[5] += f;
     hash[6] += g;
     hash[7] += h;
+    file.close();
 }
 int main(int argc, char *argv[])
 {
     // string path = "D:\\Vscode\\CPP\\DS\\sha.txt";
-    bool output = false;
+    // bool output = false;
     string path = argv[1];
-    // bool output;
-    // if (strcmp(argv[2], "true") == 0 || strcmp(argv[2], "True") == 0 || strcmp(argv[2], "1") == 0)
-    // {
-    //     output = true;
-    //     cout << "rounds output mode" << endl;
-    // }
-    // else if (strcmp(argv[2], "false") == 0 || strcmp(argv[2], "False") == 0 || strcmp(argv[2], "0") == 0)
-    // {
-    //     output = false;
-    //     cout << "rounds hide mode" << endl;
-    // }
-    // else
-    // {
-    //     cout << "parameters error!" << endl;
-    //     return 1;
-    // }
+    bool output = false;
+    if (strcmp(argv[2], "true") == 0 || strcmp(argv[2], "True") == 0 || strcmp(argv[2], "1") == 0)
+    {
+        output = true;
+        cout << "rounds output mode" << endl;
+    }
+    else if (strcmp(argv[2], "false") == 0 || strcmp(argv[2], "False") == 0 || strcmp(argv[2], "0") == 0)
+    {
+        output = false;
+        cout << "rounds hide mode" << endl;
+    }
+    else
+    {
+        cout << "parameters error!" << endl;
+        return 1;
+    }
 
     ifstream file(path);
     if (file.is_open())
@@ -174,36 +201,62 @@ int main(int argc, char *argv[])
             hash[i] = sha512_initial_hash[i];
         }
         // 初始化hash value
-
+        // 清空輸出檔，或著創建
+        ofstream cleanOutput(outputPath, ios::trunc);
+        cleanOutput.close();
         for (size_t i = 0; i < paddedLength; i += BlockSize)
         {
             uint8_t block[BlockSize];
             memcpy(block, &paddedInput[i], BlockSize);
             // 現在，block 陣列包含了當前的 128 byte 區塊
             // 接著對每個區塊執行 SHA-512 壓縮函數
+            ofstream outputfile(outputPath, ios::app);
+            if (output == true)
+            {
+                cout << dec << "Block:";
+                outputfile << dec << "Block:";
+                if (i == 0)
+                {
+                    cout << dec << i + 1 << endl;
+                    outputfile << dec << i + 1 << endl;
+                }
+                else
+                {
+                    cout << i / 128 + 1 << endl;
+                    outputfile << i / 128 + 1 << endl;
+                }
+            }
+
+            outputfile.close();
             shaCompress(hash, block, output);
         }
         auto end_time = chrono::high_resolution_clock::now();
         auto duration = chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count() / 1000000.0;
+        ofstream lasOutputfile(outputPath, ios::app);
         // 紀錄整個計算所花費的時間
         if (duration > 0)
         {
-            cout << "Performance: " << fixed << setprecision(5) << (paddedLength / duration) << " bytes/second" << endl;
+            cout << dec << "Performance: " << fixed << setprecision(5) << (paddedLength / duration) << " bytes/second" << endl;
+            lasOutputfile << dec << "Performance: " << fixed << setprecision(5) << (paddedLength / duration) << " bytes/second" << endl;
         }
         else
         {
-            cout << "The computation is too fast to measure the performance accurately." << endl;
+            cout << dec << "The computation is too fast to measure the performance accurately." << endl;
+            lasOutputfile << dec << "The computation is too fast to measure the performance accurately." << endl;
         }
         // 輸出以(bytes/second)為單位的效能
         delete[] paddedInput;
         stringstream final_hash;
-        cout << "The Sha-512 result is:" << endl;
+        cout << dec << "The Sha-512 result is:" << endl;
+        lasOutputfile << dec << "The Sha-512 result is:" << endl;
         for (int i = 0; i < 8; i++)
         {
             final_hash << setfill('0') << setw(16) << hex << hash[i];
         }
         // 輸出加密完成的結果
         cout << final_hash.str() << endl;
+        lasOutputfile << final_hash.str() << endl;
+        lasOutputfile.close();
         file.close();
     }
     else
@@ -215,5 +268,4 @@ int main(int argc, char *argv[])
 // reference:
 // https://en.wikipedia.org/wiki/SHA-2
 // https://medium.com/@zaid960928/cryptography-explaining-sha-512-ad896365a0c1
-// https://chat.openai.com/
 // https://www.youtube.com/watch?v=orIgy2MjqrA&t=102s

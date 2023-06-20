@@ -1,1 +1,0 @@
-python ts_scripts/torchserve_grpc_client.py infer densenet161 examples/image_classifier/kitten.jpg

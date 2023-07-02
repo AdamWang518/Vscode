@@ -3,37 +3,44 @@ import torch
 import torch.nn as nn
 from torchvision import datasets, transforms
 
-class discriminator(nn.Module):
+# 卷积模块，由卷积核和激活函数组成
+
+
+class CNN(nn.Module):
     def __init__(self):
-        super(discriminator, self).__init__()
-        self.main = nn.Sequential(
-            nn.Flatten(),
-            nn.Linear(784, 512),
+        super(CNN, self).__init__()
+
+        # 建立類神經網路各層
+        self.flatten = nn.Flatten()  # 轉為一維向量
+        self.linear_relu_stack = nn.Sequential(
+            nn.Linear(28*28, 512),   # 線性轉換
+            nn.ReLU(),               # ReLU 轉換
+            nn.Linear(512, 512),
             nn.ReLU(),
-            nn.Linear(512, 256),
-            nn.ReLU(),
-            nn.Linear(256, 128),
-            nn.ReLU(),
-            nn.Linear(128, 64),
-            nn.ReLU(),
-            nn.Linear(64, 10)
+            nn.Linear(512, 10)
         )
 
-    def forward(self, input):
-        return self.main(input)
+    def forward(self, x):
+        # 定義資料如何通過類神經網路各層
+        x = self.flatten(x)
+        logits = self.linear_relu_stack(x)
+        return logits
+
+
 device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 
 # Transform
 transform = transforms.Compose([transforms.ToTensor(),
                                 transforms.Normalize((0.5,), (0.5,))])
 
+
 def predict_image(model_path, image_path):
     # 初始化模型
-    model = discriminator().to(device)
+    model = CNN().to(device)
 
     # 讀取模型參數
     model = torch.load(model_path)
-    model = model.to(device)
+    #model = model.to(device)
     model.eval()
 
     # 讀取圖像
@@ -50,8 +57,8 @@ def predict_image(model_path, image_path):
     _, predicted = torch.max(output.data, 1)  # 取得預測結果
     return predicted.item()
 
+
 # 使用方法：
-model_path = 'D:\\Vscode\\Python\\AI\\Practice\\Discriminator_epoch_19.pth'
+model_path = 'D:\\Vscode\\Python\\AI\\Practice\\model_min_train.pth'
 image_path = 'D:\\Vscode\\Python\\AI\\Practice\\6.png'  # 假設 'test.png' 是你要預測的圖片
 print(predict_image(model_path, image_path))  # 這會打印出模型預測的數字
-

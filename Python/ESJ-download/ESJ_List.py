@@ -16,8 +16,8 @@ def replace_special_chars(string):
     pattern = r'[\/:?"<>|]'
     return re.sub(pattern, '_', string)
 
-
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+# driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+driver = webdriver.Chrome(service=Service("D:\\Vscode\\Python\\driver_source\\chromedriver.exe"))
 # driver = webdriver.Chrome("D:\\Vscode\\Python\\ESJ-download\\chromedriver.exe")
 driver.get("https://www.esjzone.cc/my/login")
 driver.find_element(

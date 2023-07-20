@@ -16,8 +16,8 @@ def replace_special_chars(string):
     return re.sub(pattern, '_', string)
 
 
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-
+# driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+driver = webdriver.Chrome(service=Service("D:\\Vscode\\Python\\driver_source\\chromedriver.exe"))
 
 driver.get("https://masiro.me/admin/auth/login")
 
@@ -41,7 +41,7 @@ with open(f'D:\\Vscode\\Python\\Masiro-download\\Masiro_List.txt', 'r', encoding
         name = replace_special_chars(name)
         print(name)
         print(line)
-        path = 'D:\\MEGA\\小說\\真白萌爬蟲\\'+name+'.txt'
+        path = 'D:\\MEGA\\小說\\Masiro爬蟲\\'+name+'.txt'
         f = open(path, 'w', encoding='utf8')
         f.write('小說連結:'+line+'\n\n')
         Links = driver.find_elements(

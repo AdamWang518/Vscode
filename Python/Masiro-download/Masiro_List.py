@@ -23,11 +23,11 @@ driver.get("https://masiro.me/admin/auth/login")
 
 driver.find_element(
     By.XPATH, '//*[@id="username"]').send_keys('dodoga518@gmail.com')
-driver.find_element(By.XPATH, '//*[@id="password"]').send_keys('20010518')
+driver.find_element(By.XPATH, '//*[@id="password"]').send_keys('dodoga518')
 driver.find_element(By.XPATH, '//*[@id="login-btn"]').click()
 
 time.sleep(5)
-with open(f'D:\\Vscode\\Python\\Masiro-download\\Masiro_List.txt', 'r', encoding='utf8') as listReader:
+with open(f'D:\\Github\\Vscode\\Python\\Masiro-download\\Masiro_List.txt', 'r', encoding='utf8') as listReader:
     for line in listReader:
         driver.get(line)  # 要爬的小說連結
         try:

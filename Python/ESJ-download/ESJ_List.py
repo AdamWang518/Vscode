@@ -17,17 +17,17 @@ def replace_special_chars(string):
     return re.sub(pattern, '_', string)
 
 # driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-driver = webdriver.Chrome(service=Service("D:\\Vscode\\Python\\driver_source\\chromedriver.exe"))
+driver = webdriver.Chrome(service=Service("D:\\Github\\Vscode\\Python\\driver_source\\chromedriver.exe"))
 # driver = webdriver.Chrome("D:\\Vscode\\Python\\ESJ-download\\chromedriver.exe")
 driver.get("https://www.esjzone.cc/my/login")
 driver.find_element(
     By.XPATH, '/html/body/div[3]/section/div/div[1]/form/div[1]/input').send_keys('dodoga518@gmail.com')
 driver.find_element(
-    By.XPATH, '/html/body/div[3]/section/div/div[1]/form/div[2]/input').send_keys('20010518')
+    By.XPATH, '/html/body/div[3]/section/div/div[1]/form/div[2]/input').send_keys('dodoga518')
 driver.find_element(
     By.XPATH, '/html/body/div[3]/section/div/div[1]/form/div[4]/a').click()
 time.sleep(5)
-with open('D:\\Vscode\\Python\\ESJ-download\\ESJ_List.txt', 'r', encoding='utf8') as listReader:
+with open('D:\\Github\\Vscode\\Python\\ESJ-download\\ESJ_List.txt', 'r', encoding='utf8') as listReader:
     for line in listReader:
         driver.get(line)  # 要爬的小說連結
         name = driver.find_element(

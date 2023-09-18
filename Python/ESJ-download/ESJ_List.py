@@ -23,7 +23,7 @@ driver.get("https://www.esjzone.cc/my/login")
 driver.find_element(
     By.XPATH, '/html/body/div[3]/section/div/div[1]/form/div[1]/input').send_keys('dodoga518@gmail.com')
 driver.find_element(
-    By.XPATH, '/html/body/div[3]/section/div/div[1]/form/div[2]/input').send_keys('20010518')
+    By.XPATH, '/html/body/div[3]/section/div/div[1]/form/div[2]/input').send_keys('dodoga518')
 driver.find_element(
     By.XPATH, '/html/body/div[3]/section/div/div[1]/form/div[4]/a').click()
 time.sleep(5)

@@ -23,7 +23,7 @@ driver.get("https://masiro.me/admin/auth/login")
 
 driver.find_element(
     By.XPATH, '//*[@id="username"]').send_keys('dodoga518@gmail.com')
-driver.find_element(By.XPATH, '//*[@id="password"]').send_keys('20010518')
+driver.find_element(By.XPATH, '//*[@id="password"]').send_keys('dodoga518')
 driver.find_element(By.XPATH, '//*[@id="login-btn"]').click()
 
 time.sleep(5)

@@ -57,8 +57,8 @@ transform = transforms.Compose([transforms.ToTensor(),
 
 
 # Load data
-train_set = datasets.MNIST('D:\Vscode\data', train=True, download=True, transform=transform)
-test_set = datasets.MNIST('D:\Vscode\data', train=False, download=True, transform=transform)
+train_set = datasets.MNIST('D:\Github\Vscode\data', train=True, download=True, transform=transform)
+test_set = datasets.MNIST('D:\Github\Vscode\data', train=False, download=True, transform=transform)
 train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
 test_loader = DataLoader(test_set, batch_size=batch_size, shuffle=False)
 
@@ -118,8 +118,8 @@ for epoch in range(epochs):
             print('[{}/{}, {}/{}] D_loss: {:.3f} G_loss: {:.3f}'.format(epoch, epochs, times, len(train_loader), d_loss.item(), g_loss.item()))
 
     imgs_numpy = (fake_inputs.data.cpu().numpy()+1.0)/2.0
-    # show_images(imgs_numpy[:16])
-    # plt.show()
+    show_images(imgs_numpy[:16])
+    plt.show()
 
     if epoch % 50 == 0:
         torch.save(G, 'Generator_epoch_{}.pth'.format(epoch))

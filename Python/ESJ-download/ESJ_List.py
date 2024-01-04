@@ -47,13 +47,24 @@ with open('D:\\Github\\Vscode\\Python\\ESJ-download\\ESJ_List.txt', 'r', encodin
                 By.CSS_SELECTOR, '#chapterList > details > a')
         except:
             print('無隱藏')
+        try:
+            MoreDetails=driver.find_elements(
+                By.CSS_SELECTOR, '#chapterList > details > details > a')
+        except:
+            print('無隱藏')
         Links = driver.find_elements(By.CSS_SELECTOR, '#chapterList > a')
         pageList = []
+        
         for detail in Details:
             try:
                 pageList.append(detail.get_attribute('href'))
             except:
                 print('無隱藏章節')
+        for detail in MoreDetails:
+            try:
+                pageList.append(detail.get_attribute('href'))
+            except:
+                print('無多層隱藏章節')        
         for link in Links:
             pageList.append(link.get_attribute('href'))
 

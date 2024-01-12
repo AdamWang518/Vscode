@@ -9,7 +9,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from selenium.webdriver.chrome.options import Options
 import time
-
+from tqdm import tqdm
 
 def replace_special_chars(string):
     pattern = r'[\/:?"<>|]'
@@ -50,7 +50,7 @@ with open(f'D:\\Github\\Vscode\\Python\\Masiro-download\\Masiro_List.txt', 'r', 
         pageList = []
         for link in Links:
             pageList.append(link.get_attribute('href'))
-        for page in pageList:
+        for page in tqdm(pageList):
             time.sleep(15)
             driver.get(page)
             try:

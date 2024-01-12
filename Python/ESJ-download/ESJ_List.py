@@ -10,6 +10,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 import time
+from tqdm import tqdm
 
 
 def replace_special_chars(string):
@@ -68,7 +69,7 @@ with open('D:\\Github\\Vscode\\Python\\ESJ-download\\ESJ_List.txt', 'r', encodin
         for link in Links:
             pageList.append(link.get_attribute('href'))
 
-        for page in pageList:
+        for page in tqdm(pageList):
             driver.get(page)
             # time.sleep(1)
             soup = BeautifulSoup(driver.page_source, 'html.parser')

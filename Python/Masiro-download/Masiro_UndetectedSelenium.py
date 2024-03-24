@@ -22,14 +22,14 @@ driver.find_element(By.XPATH,'//*[@id="password"]').send_keys('20010518')
 driver.find_element(By.XPATH,'//*[@id="login-btn"]').click()
 time.sleep(5)
 
-driver.get("https://masiro.me/admin/novelView?novel_id=621")#要爬的小說連結
+driver.get("https://masiro.me/admin/novelView?novel_id=729")#要爬的小說連結
 
 
 
 name=driver.find_element(By.CSS_SELECTOR,'#app > section.content > div:nth-child(1) > div > div > div.box-body.z-i > div.novel-title').text
     
 # path = 'D:\\MEGA\\小說\\真白萌爬蟲\\'+'『男女比1比30』世界的黑一點偶像'+'.txt'#要爬的小說名稱
-path = 'D:\\MEGA\\小說\\真白萌爬蟲\\'+name+'.txt'
+path = 'D:\\MEGA\\小說\\Masiro暫存\\'+name+'.txt'
 f = open(path, 'w',encoding='utf8')
 # Details=soup.select('#chapterList > details > a')
 Links=driver.find_elements(By.CSS_SELECTOR,'#app > section.content > div > div > div > div.box-body > div.chapter-content > ul > li > ul > a')
@@ -42,7 +42,7 @@ for link in Links:
 # del pageList[0:43]
 for page in pageList:
     driver.get(page)
-    time.sleep(1)
+    time.sleep(15)
     try:
         #app > section.content > div:nth-child(1) > div > div > div.box-header.with-border.nov-title-box > span.novel-title > div
         title=driver.find_element(By.CSS_SELECTOR,'#app > section.content > div:nth-child(1) > div > div > div.box-header.with-border.nov-title-box > span.novel-title').text

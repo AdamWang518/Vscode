@@ -22,10 +22,9 @@ int main()
 {
     int i, j, max;
     int number1, number2, temp;
-    while (true)
+    while (cin >> i >> j)
     {
         max = 0;
-        cin >> i >> j;
         number1 = i;
         number2 = j;
         if (number1 > number2)

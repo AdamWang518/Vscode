@@ -2,7 +2,7 @@ from ast import Delete
 import re
 from time import sleep
 from bs4 import BeautifulSoup
-
+from tqdm import tqdm
 
 from selenium import webdriver
 
@@ -47,6 +47,11 @@ with open('D:\\Vscode\\Python\\ESJ-download\\ESJ_List.txt', 'r', encoding='utf8'
                 By.CSS_SELECTOR, '#chapterList > details > a')
         except:
             print('無隱藏')
+        try:
+            MoreDetails=driver.find_elements(
+                By.CSS_SELECTOR, '#chapterList > details > details > a')
+        except:
+            print('無隱藏')
         Links = driver.find_elements(By.CSS_SELECTOR, '#chapterList > a')
         pageList = []
         for detail in Details:
@@ -54,10 +59,15 @@ with open('D:\\Vscode\\Python\\ESJ-download\\ESJ_List.txt', 'r', encoding='utf8'
                 pageList.append(detail.get_attribute('href'))
             except:
                 print('無隱藏章節')
+        for detail in MoreDetails:
+            try:
+                pageList.append(detail.get_attribute('href'))
+            except:
+                print('無多層隱藏章節')  
         for link in Links:
             pageList.append(link.get_attribute('href'))
 
-        for page in pageList:
+        for page in tqdm(pageList):
             driver.get(page)
             # time.sleep(1)
             soup = BeautifulSoup(driver.page_source, 'html.parser')

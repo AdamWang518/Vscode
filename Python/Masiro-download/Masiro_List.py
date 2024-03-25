@@ -41,7 +41,7 @@ with open(f'D:\\Vscode\\Python\\Masiro-download\\Masiro_List.txt', 'r', encoding
         name = replace_special_chars(name)
         print(name)
         print(line)
-        path = 'D:\\MEGA\\小說\\Masiro爬蟲\\'+name+'.txt'
+        path = 'D:\\MEGA\\小說\\Masiro暫存\\'+name+'.txt'
         f = open(path, 'w', encoding='utf8')
         f.write('小說連結:'+line+'\n\n')
         Links = driver.find_elements(
@@ -50,6 +50,7 @@ with open(f'D:\\Vscode\\Python\\Masiro-download\\Masiro_List.txt', 'r', encoding
         for link in Links:
             pageList.append(link.get_attribute('href'))
         for page in pageList:
+            time.sleep(15)
             driver.get(page)
             try:
                 # app > section.content > div:nth-child(1) > div > div > div.box-header.with-border.nov-title-box > span.novel-title > div
